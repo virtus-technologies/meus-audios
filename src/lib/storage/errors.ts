@@ -10,6 +10,7 @@ export class StorageError extends Error {
 
 export type StorageErrorCode =
   | "INVALID_MIME_TYPE"
+  | "INVALID_ID"
   | "FILE_TOO_LARGE"
   | "MISSING_TOKEN"
   | "UPLOAD_FAILED"

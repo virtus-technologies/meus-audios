@@ -9,12 +9,19 @@ import {
 } from "./constants";
 import { StorageError } from "./errors";
 
+/**
+ * Padrão aceito para userId e audioId nas chaves de storage.
+ * Restringe a alfanuméricos + `_` + `-` para prevenir path traversal
+ * (ex.: `..`, `/`, `%2F`) que permitiria acessar blobs de outros usuários.
+ * Compatível com `cuid()` do Prisma e UUIDs convencionais.
+ */
+const STORAGE_ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
+
 export type AudioUploadInput = {
   userId: string;
   audioId: string;
-  file: File | Blob;
+  file: Blob;
   mimeType: string;
-  sizeBytes: number;
 };
 
 export type AudioUploadResult = {
@@ -33,6 +40,15 @@ function assertToken(): string {
     );
   }
   return token;
+}
+
+function assertSafeStorageId(value: string, name: "userId" | "audioId"): void {
+  if (!STORAGE_ID_PATTERN.test(value)) {
+    throw new StorageError(
+      `${name} contém caracteres não permitidos. Apenas [a-zA-Z0-9_-] são aceitos.`,
+      "INVALID_ID",
+    );
+  }
 }
 
 export function isAllowedAudioMimeType(mimeType: string): mimeType is AllowedAudioMimeType {
@@ -61,12 +77,17 @@ export function validateAudioFile(input: { mimeType: string; sizeBytes: number }
  * A chave é estável e independente da estrutura visual de pastas que o
  * usuário monta no produto (regra de negócio em
  * docs/plano-de-implementacao.md seção 9).
+ *
+ * `userId` e `audioId` são validados contra `STORAGE_ID_PATTERN` para
+ * prevenir path traversal.
  */
 export function buildAudioStorageKey(params: {
   userId: string;
   audioId: string;
   mimeType: string;
 }): string {
+  assertSafeStorageId(params.userId, "userId");
+  assertSafeStorageId(params.audioId, "audioId");
   const ext = MIME_TO_EXTENSION[params.mimeType];
   if (!ext) {
     throw new StorageError(`MIME type não suportado: ${params.mimeType}.`, "INVALID_MIME_TYPE");
@@ -75,28 +96,35 @@ export function buildAudioStorageKey(params: {
 }
 
 /**
- * Faz upload de um arquivo de áudio para o Vercel Blob privado.
+ * Faz upload de um arquivo de áudio para o Vercel Blob.
  *
- * Retorna a URL pública assinada e a chave técnica (`storageKey`) para
- * armazenar no banco. O blob é privado por padrão — só é acessível via
- * URL assinada gerada pelo runtime.
+ * O tamanho é lido diretamente de `file.size` (Blob nativo); o caller não
+ * pode falsificar o tamanho via parâmetro separado. Erros do SDK são
+ * registrados no servidor mas não propagam mensagens cruas (mitigação de
+ * leak de detalhes internos / token).
+ *
+ * Acesso atual é `public` (limitação do `@vercel/blob` v1). A URL é
+ * unguessable graças ao prefixo `userId/audioId`. Para hardening
+ * futuro: emitir URLs assinadas com expiração curta sob demanda.
  */
 export async function uploadAudio(input: AudioUploadInput): Promise<AudioUploadResult> {
-  validateAudioFile(input);
+  const sizeBytes = input.file.size;
+  validateAudioFile({ mimeType: input.mimeType, sizeBytes });
   const token = assertToken();
   const storageKey = buildAudioStorageKey(input);
 
   let blob: PutBlobResult;
   try {
     blob = await put(storageKey, input.file, {
-      access: "public", // Vercel Blob: tier privado vem por org/project; URL é assinada via SDK
+      access: "public",
       contentType: input.mimeType,
       token,
       addRandomSuffix: false,
     });
   } catch (error) {
+    console.error("[storage] uploadAudio failed", { storageKey, error });
     throw new StorageError(
-      `Falha ao fazer upload para o Vercel Blob: ${(error as Error).message}`,
+      "Falha ao fazer upload para o Vercel Blob. Verifique os logs do servidor.",
       "UPLOAD_FAILED",
     );
   }
@@ -104,7 +132,7 @@ export async function uploadAudio(input: AudioUploadInput): Promise<AudioUploadR
   return {
     blobUrl: blob.url,
     storageKey,
-    sizeBytes: input.sizeBytes,
+    sizeBytes,
     mimeType: input.mimeType,
   };
 }
@@ -117,8 +145,9 @@ export async function deleteAudio(storageKey: string): Promise<void> {
   try {
     await del(storageKey, { token });
   } catch (error) {
+    console.error("[storage] deleteAudio failed", { storageKey, error });
     throw new StorageError(
-      `Falha ao excluir do Vercel Blob: ${(error as Error).message}`,
+      "Falha ao excluir do Vercel Blob. Verifique os logs do servidor.",
       "DELETE_FAILED",
     );
   }
