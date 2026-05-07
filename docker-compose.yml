@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: meus-audios-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: meus_audios
+      POSTGRES_PASSWORD: meus_audios_dev
+      POSTGRES_DB: meus_audios
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meus_audios -d meus_audios"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+    name: meus-audios-postgres-data
