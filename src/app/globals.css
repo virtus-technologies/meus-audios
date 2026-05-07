@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* MeusÁudios warm palette — derived from preview/index.html (orange variant) */
+
+    /* Surfaces */
+    --background: 210 40% 98%; /* #F8FAFC */
+    --foreground: 222 47% 11%; /* #0F172A */
+    --surface: 0 0% 100%; /* #FFFFFF */
+    --surface-muted: 210 40% 96%; /* #F1F5F9 */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Borders & inputs */
+    --border: 214 32% 91%; /* #E2E8F0 */
+    --input: 214 32% 91%;
+    --ring: 21 90% 48%; /* primary for focus rings */
+
+    /* Primary (burnt orange #EA580C) */
+    --primary: 21 90% 48%;
+    --primary-foreground: 0 0% 100%;
+    --primary-dark: 17 79% 34%; /* #9A3412 */
+    --primary-light: 36 100% 92%; /* #FFEDD5 */
+
+    /* Accent (rose #E11D48) for AI highlights */
+    --accent: 350 84% 50%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 351 100% 95%; /* #FFE4E6 */
+    --accent-dark: 343 81% 35%; /* #9F1239 */
+
+    /* Info (amber gold #D97706) for audio/info zones */
+    --info: 32 94% 44%;
+    --info-light: 48 96% 89%; /* #FEF3C7 */
+    --info-dark: 26 84% 28%; /* #92400E */
+
+    /* Success (green #10B981) — kept as complementary contrast */
+    --success: 160 84% 39%;
+    --success-light: 152 81% 96%; /* #ECFDF5 */
+    --success-dark: 161 94% 24%; /* #047857 */
+
+    /* Warning (yellow-700 #CA8A04) deeper to differ from amber info */
+    --warning: 45 93% 41%;
+    --warning-light: 55 97% 88%; /* #FEF9C3 */
+    --warning-dark: 36 84% 31%; /* #854D0E */
+
+    /* Destructive (red-600 #DC2626) */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-light: 0 93% 94%; /* #FEE2E2 */
+    --destructive-dark: 0 74% 42%; /* #B91C1C */
+
+    /* Muted text */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 20% 65%; /* #94A3B8 */
+
+    /* Radius scale */
+    --radius: 1rem; /* 16px — matches design.md cards */
+
+    /* Font stacks (override at runtime via next/font) */
+    --font-display: "Fraunces", ui-serif, Georgia, serif;
+    --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+}
