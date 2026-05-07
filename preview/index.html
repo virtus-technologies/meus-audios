@@ -9,19 +9,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,30..100&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --primary: #4F46E5;
-    --primary-dark: #3730A3;
-    --primary-light: #EEF2FF;
-    --purple: #F97316;
-    --purple-light: #FFEDD5;
-    --cyan: #06B6D4;
-    --cyan-light: #ECFEFF;
+    --primary: #EA580C;
+    --primary-dark: #9A3412;
+    --primary-light: #FFEDD5;
+    --purple: #E11D48;
+    --purple-light: #FFE4E6;
+    --cyan: #D97706;
+    --cyan-light: #FEF3C7;
     --success: #10B981;
     --success-light: #ECFDF5;
-    --warning: #F59E0B;
-    --warning-light: #FFFBEB;
-    --error: #EF4444;
-    --error-light: #FEF2F2;
+    --warning: #CA8A04;
+    --warning-light: #FEF9C3;
+    --error: #DC2626;
+    --error-light: #FEE2E2;
 
     --bg: #F8FAFC;
     --surface: #FFFFFF;
@@ -32,16 +32,16 @@
     --text-secondary: #475569;
     --text-muted: #94A3B8;
 
-    --gradient-primary: linear-gradient(135deg, #4F46E5 0%, #F97316 55%, #06B6D4 100%);
-    --gradient-soft: linear-gradient(135deg, #EEF2FF 0%, #FFEDD5 50%, #ECFEFF 100%);
-    --gradient-mesh: radial-gradient(at 20% 0%, #EEF2FF 0px, transparent 50%),
-                     radial-gradient(at 80% 0%, #FFEDD5 0px, transparent 50%),
-                     radial-gradient(at 50% 100%, #ECFEFF 0px, transparent 50%);
+    --gradient-primary: linear-gradient(135deg, #EA580C 0%, #E11D48 55%, #D97706 100%);
+    --gradient-soft: linear-gradient(135deg, #FFEDD5 0%, #FFE4E6 50%, #FEF3C7 100%);
+    --gradient-mesh: radial-gradient(at 20% 0%, #FFEDD5 0px, transparent 50%),
+                     radial-gradient(at 80% 0%, #FFE4E6 0px, transparent 50%),
+                     radial-gradient(at 50% 100%, #FEF3C7 0px, transparent 50%);
 
     --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
     --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     --shadow-lg: 0 24px 48px -12px rgba(15, 23, 42, 0.12);
-    --shadow-glow: 0 16px 48px -12px rgba(79, 70, 229, 0.35);
+    --shadow-glow: 0 16px 48px -12px rgba(234, 88, 12, 0.35);
 
     --radius-sm: 10px;
     --radius: 16px;
@@ -89,7 +89,7 @@
   .tabs-brand .dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--gradient-primary);
-    box-shadow: 0 0 0 4px rgba(79,70,229,0.12);
+    box-shadow: 0 0 0 4px rgba(234,88,12,0.12);
   }
   .tabs-brand em {
     font-style: italic;
@@ -125,7 +125,7 @@
     background: var(--gradient-primary); color: white;
     box-shadow: var(--shadow-glow);
   }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 20px 56px -12px rgba(79,70,229,0.45); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 20px 56px -12px rgba(234,88,12,0.45); }
   .btn-secondary {
     background: var(--surface); color: var(--text);
     border: 1px solid var(--border);
@@ -142,11 +142,11 @@
     letter-spacing: 0.01em;
   }
   .badge-success { background: var(--success-light); color: #047857; }
-  .badge-warning { background: var(--warning-light); color: #B45309; }
+  .badge-warning { background: var(--warning-light); color: #854D0E; }
   .badge-error   { background: var(--error-light);   color: #B91C1C; }
   .badge-info    { background: var(--primary-light); color: var(--primary-dark); }
-  .badge-ai      { background: var(--purple-light);  color: #9A3412; }
-  .badge-cyan    { background: var(--cyan-light);    color: #0E7490; }
+  .badge-ai      { background: var(--purple-light);  color: #9F1239; }
+  .badge-cyan    { background: var(--cyan-light);    color: #92400E; }
   .badge-muted   { background: var(--surface-muted); color: var(--text-secondary); }
   .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .badge.pulse .dot { animation: pulse 1.6s ease-in-out infinite; }
@@ -338,7 +338,7 @@
   .search input:focus {
     background: white;
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(79,70,229,0.12);
+    box-shadow: 0 0 0 4px rgba(234,88,12,0.12);
   }
   .search .search-icon {
     position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
@@ -710,7 +710,7 @@
   .transcript-segment p { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--text); }
   .transcript-segment.active { background: var(--primary-light); }
   .transcript-segment.active p { color: var(--primary-dark); font-weight: 500; }
-  .transcript-segment mark { background: var(--warning-light); color: #92400E; padding: 1px 3px; border-radius: 3px; }
+  .transcript-segment mark { background: var(--warning-light); color: #854D0E; padding: 1px 3px; border-radius: 3px; }
 
   .ai-panel {
     background: white;
@@ -722,8 +722,8 @@
   }
   .ai-panel::before {
     content: ""; position: absolute; inset: 0;
-    background: radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
-                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+    background: radial-gradient(at 0% 0%, rgba(225, 29, 72, 0.08) 0%, transparent 40%),
+                radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.08) 0%, transparent 40%);
     pointer-events: none;
   }
   .ai-panel > * { position: relative; }
@@ -750,7 +750,7 @@
     background: white;
     transition: all 0.2s ease;
   }
-  .ai-input:focus-within { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(249,115,22,0.1); }
+  .ai-input:focus-within { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(225,29,72,0.1); }
   .ai-input textarea {
     width: 100%; border: 0; outline: 0;
     resize: none; min-height: 56px;
@@ -1693,8 +1693,8 @@
             </div>
 
             <div class="lib-card">
-              <div class="cover" style="background: linear-gradient(135deg, #FFFBEB, #FEF3C7);">
-                <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round">
+              <div class="cover" style="background: linear-gradient(135deg, #FEF9C3, #FEF08A);">
+                <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#CA8A04" stroke-width="2" stroke-linecap="round">
                   <line x1="2" y1="18" x2="2" y2="22"/><line x1="6" y1="14" x2="6" y2="26"/><line x1="10" y1="10" x2="10" y2="30"/><line x1="14" y1="12" x2="14" y2="28"/><line x1="18" y1="6" x2="18" y2="34"/><line x1="22" y1="14" x2="22" y2="26"/><line x1="26" y1="10" x2="26" y2="30"/><line x1="30" y1="4" x2="30" y2="36"/><line x1="34" y1="14" x2="34" y2="26"/><line x1="38" y1="10" x2="38" y2="30"/><line x1="42" y1="14" x2="42" y2="26"/><line x1="46" y1="8" x2="46" y2="32"/><line x1="50" y1="14" x2="50" y2="26"/><line x1="54" y1="12" x2="54" y2="28"/><line x1="58" y1="16" x2="58" y2="24"/><line x1="62" y1="14" x2="62" y2="26"/><line x1="66" y1="18" x2="66" y2="22"/><line x1="70" y1="20" x2="70" y2="20"/>
                 </svg>
                 <button class="play-btn">
@@ -1711,8 +1711,8 @@
             </div>
 
             <div class="lib-card">
-              <div class="cover" style="background: linear-gradient(135deg, #FFEDD5, #FED7AA);">
-                <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#F97316" stroke-width="2" stroke-linecap="round">
+              <div class="cover" style="background: linear-gradient(135deg, #FFE4E6, #FECDD3);">
+                <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round">
                   <line x1="2" y1="20" x2="2" y2="20"/><line x1="6" y1="16" x2="6" y2="24"/><line x1="10" y1="10" x2="10" y2="30"/><line x1="14" y1="14" x2="14" y2="26"/><line x1="18" y1="6" x2="18" y2="34"/><line x1="22" y1="12" x2="22" y2="28"/><line x1="26" y1="8" x2="26" y2="32"/><line x1="30" y1="2" x2="30" y2="38"/><line x1="34" y1="10" x2="34" y2="30"/><line x1="38" y1="6" x2="38" y2="34"/><line x1="42" y1="14" x2="42" y2="26"/><line x1="46" y1="8" x2="46" y2="32"/><line x1="50" y1="12" x2="50" y2="28"/><line x1="54" y1="6" x2="54" y2="34"/><line x1="58" y1="14" x2="58" y2="26"/><line x1="62" y1="10" x2="62" y2="30"/><line x1="66" y1="16" x2="66" y2="24"/><line x1="70" y1="14" x2="70" y2="26"/><line x1="74" y1="18" x2="74" y2="22"/><line x1="78" y1="20" x2="78" y2="20"/>
                 </svg>
                 <button class="play-btn">
@@ -1730,8 +1730,8 @@
             </div>
 
             <div class="lib-card">
-              <div class="cover" style="background: linear-gradient(135deg, #ECFEFF, #CFFAFE);">
-                <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round">
+              <div class="cover" style="background: linear-gradient(135deg, #FEF3C7, #FDE68A);">
+                <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round">
                   <line x1="2" y1="18" x2="2" y2="22"/><line x1="6" y1="12" x2="6" y2="28"/><line x1="10" y1="8" x2="10" y2="32"/><line x1="14" y1="14" x2="14" y2="26"/><line x1="18" y1="4" x2="18" y2="36"/><line x1="22" y1="10" x2="22" y2="30"/><line x1="26" y1="14" x2="26" y2="26"/><line x1="30" y1="6" x2="30" y2="34"/><line x1="34" y1="12" x2="34" y2="28"/><line x1="38" y1="8" x2="38" y2="32"/><line x1="42" y1="14" x2="42" y2="26"/><line x1="46" y1="10" x2="46" y2="30"/><line x1="50" y1="6" x2="50" y2="34"/><line x1="54" y1="14" x2="54" y2="26"/><line x1="58" y1="10" x2="58" y2="30"/><line x1="62" y1="16" x2="62" y2="24"/><line x1="66" y1="14" x2="66" y2="26"/><line x1="70" y1="18" x2="70" y2="22"/><line x1="74" y1="20" x2="74" y2="20"/>
                 </svg>
                 <button class="play-btn">
