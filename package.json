@@ -9,7 +9,13 @@
     "lint": "next lint",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "next": "^15.1.0",
@@ -18,7 +24,8 @@
     "lucide-react": "^0.469.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.0",
+    "@prisma/client": "^6.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
@@ -31,6 +38,7 @@
     "eslint": "^9.18.0",
     "eslint-config-next": "^15.1.0",
     "prettier": "^3.4.2",
-    "prettier-plugin-tailwindcss": "^0.6.9"
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "prisma": "^6.2.0"
   }
 }
