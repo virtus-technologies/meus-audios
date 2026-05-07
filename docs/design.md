@@ -46,63 +46,68 @@ Palavras-chave:
 
 ## 4. Direção de Cores
 
-Usar uma paleta vibrante, porém confortável.
+Paleta vibrante e quente coordenada em torno do laranja, com tons análogos (rose, âmbar) para acento e verde como complementar.
 
-### Cores principais sugeridas
+### Cores principais
 
-#### Azul violeta
+#### Laranja queimado (primary)
 
-Usar como cor primária para botões, links, foco e elementos de ação.
-
-```txt
-Primary: #4F46E5
-Primary dark: #3730A3
-Primary light: #EEF2FF
-```
-
-#### Roxo moderno
-
-Usar em destaques de IA, cards especiais e gradientes.
+Cor primária para CTAs, links, foco e elementos de ação.
 
 ```txt
-Purple: #7C3AED
-Purple light: #F3E8FF
+Primary: #EA580C
+Primary dark: #9A3412
+Primary light: #FFEDD5
 ```
 
-#### Ciano / azul claro
+#### Rose moderno (accent)
 
-Usar para elementos de áudio, ondas sonoras, estados informativos e detalhes visuais.
+Acento para destaques de IA, cards especiais e gradientes.
 
 ```txt
-Cyan: #06B6D4
-Cyan light: #ECFEFF
+Accent: #E11D48
+Accent light: #FFE4E6
+Accent dark: #9F1239
 ```
 
-#### Verde energético
+#### Âmbar dourado (info)
 
-Usar para estados positivos, sucesso, transcrição concluída e confirmações.
+Tom informativo para elementos de áudio, ondas sonoras, estados e detalhes visuais.
+
+```txt
+Info: #D97706
+Info light: #FEF3C7
+Info dark: #92400E
+```
+
+#### Verde energético (success)
+
+Estados positivos, sucesso, transcrição concluída e confirmações. Verde mantido por contraste complementar com o laranja.
 
 ```txt
 Success: #10B981
 Success light: #ECFDF5
+Success dark: #047857
 ```
 
-#### Laranja suave
+#### Amarelo deeper (warning)
 
-Usar para alertas leves, pendências e status em processamento.
+Alertas leves, pendências e status em processamento. Tom mais profundo que o âmbar do info para evitar conflito visual.
 
 ```txt
-Warning: #F59E0B
-Warning light: #FFFBEB
+Warning: #CA8A04
+Warning light: #FEF9C3
+Warning dark: #854D0E
 ```
 
-#### Vermelho suave
+#### Vermelho profundo (error)
 
-Usar somente para erros e ações destrutivas.
+Erros e ações destrutivas. Tom mais profundo para se distanciar do rose accent.
 
 ```txt
-Error: #EF4444
-Error light: #FEF2F2
+Error: #DC2626
+Error light: #FEE2E2
+Error dark: #B91C1C
 ```
 
 ### Neutros
@@ -119,48 +124,54 @@ Text muted: #94A3B8
 
 ## 5. Uso de Gradientes
 
-Usar gradientes com moderação para dar personalidade ao produto.
-
-Exemplos:
+Usar gradientes com moderação para dar personalidade ao produto. Toda paleta de gradiente é quente: laranja → rose → âmbar.
 
 ```txt
-Gradient primary: linear-gradient(135deg, #4F46E5 0%, #7C3AED 55%, #06B6D4 100%)
-Gradient soft: linear-gradient(135deg, #EEF2FF 0%, #F3E8FF 50%, #ECFEFF 100%)
+Gradient primary: linear-gradient(135deg, #EA580C 0%, #E11D48 55%, #D97706 100%)
+Gradient soft:    linear-gradient(135deg, #FFEDD5 0%, #FFE4E6 50%, #FEF3C7 100%)
+Gradient mesh:    radial(20% 0%, #FFEDD5), radial(80% 0%, #FFE4E6), radial(50% 100%, #FEF3C7)
 ```
 
 Aplicar gradientes em:
 
 - Hero da landing page.
-- Cards de destaque.
-- Botão principal, se visualmente equilibrado.
-- Área de IA/análise.
-- Ilustrações de waveform.
+- Cards de destaque (especialmente o cover do áudio na página de detalhe).
+- Botão primário (gradient sólido para forte presença).
+- Área de IA/análise (mesh radial sutil de fundo).
+- Ilustrações de waveform (stroke colorido).
+- Brand mark da logo MeusÁudios.
 
-Evitar gradiente em tudo. A maior parte da interface deve permanecer clara e legível.
+Sombras com glow primário usam o laranja:
+
+```txt
+Shadow glow: 0 16px 48px -12px rgba(234, 88, 12, 0.35)
+```
+
+Evitar gradiente em tudo. Maior parte da interface permanece neutra com superfícies brancas.
 
 ## 6. Tipografia
 
-Usar fonte moderna, limpa e altamente legível.
+Pareamento de duas famílias para contraste editorial:
 
-Sugestões:
+- **Display: Fraunces** (serif moderno, suporta itálico expressivo). Usado em wordmark "Meus*Áudios*" (com itálico no acento), H1, H2, números grandes (métricas, durações destacadas) e nomes de templates.
+- **Body: Plus Jakarta Sans** (sans-serif geométrico). Usado em todo corpo de texto, navegação, badges, controles, formulários e cards.
+- **Mono: JetBrains Mono**. Usado em timestamps de transcrição, durações no player, atalhos de teclado (`⌘K`, `U`), códigos numéricos.
 
-- Inter.
-- Geist Sans.
-- Manrope.
-- Plus Jakarta Sans.
-
-Hierarquia sugerida:
+Hierarquia:
 
 ```txt
-H1: 40px a 56px, bold, line-height confortável
-H2: 28px a 36px, semibold/bold
-H3: 22px a 28px, semibold
-Body: 16px
-Small: 14px
-Caption: 12px
+H1 hero (Fraunces 400 italic):       64px / line-height 1.02 / letter-spacing -0.035em
+H1 page (Fraunces 500):              36-40px / 1.05 / -0.025em
+H2 section (Fraunces 400):           44px / 1.05 / -0.025em
+H3 panel (Fraunces 500):             19-22px / 1.2 / -0.015em
+Display number (Fraunces 500):       32px / 1 / -0.02em
+Body (Plus Jakarta Sans 400):        15-16px / 1.5
+Small (Plus Jakarta Sans 500):       13-14px
+Caption / meta (Plus Jakarta Sans):  11-12px / uppercase letterspaced quando label
+Mono caption (JetBrains Mono):       11-12px
 ```
 
-A interface deve ter boa densidade, mas sem ficar apertada.
+Usar itálico do Fraunces para palavras de ênfase em títulos (ex.: "Meus*Áudios*", "Bom dia, *Marcelo*"). Boa densidade sem aperto — espaçamento vertical entre seções com pelo menos 28-36px no desktop.
 
 ## 7. Estilo dos Componentes
 
@@ -220,15 +231,18 @@ Usar badges para:
 - Tipo de conteúdo.
 - Duração.
 
-Exemplos:
+Mapeamento status → cor:
 
 ```txt
-Transcrito: badge verde
-Transcrevendo: badge laranja
-Erro: badge vermelho
-Upload feito: badge azul
-IA: badge roxo
+Transcrito:    verde (success-light bg, success-dark text)
+Transcrevendo: amarelo (warning-light bg, warning-dark text) com pulse no dot
+Erro:          vermelho (error-light bg, error-dark text)
+Upload feito:  laranja primary (primary-light bg, primary-dark text)
+IA:            rose accent (accent-light bg, accent-dark text)
+Áudio info:    âmbar dourado (info-light bg, info-dark text)
 ```
+
+Cada badge segue o padrão pill (radius 999px) com dot opcional à esquerda para enfatizar status.
 
 ## 8. Iconografia
 
@@ -717,23 +731,35 @@ Design a modern responsive SaaS web application called MeusÁudios.
 
 MeusÁudios is a web app where users upload audio files, organize them into folders, transcribe them automatically and analyze the transcript with AI.
 
-The visual style should be vibrant but comfortable, modern, clean and trustworthy. Use a light background, white cards, soft shadows, rounded corners, strong spacing and a color palette based on indigo, violet, cyan and soft green. The product should feel like a productivity platform mixed with an intelligent personal audio library.
+The visual style should be warm, vibrant but comfortable, modern, clean and trustworthy. Use a light background (#F8FAFC), white cards, soft shadows, rounded corners (16-20px), strong spacing and a warm coordinated color palette built around burnt orange. The product should feel like a productivity platform mixed with an intelligent personal audio library.
+
+Color palette:
+- Primary (CTAs, links, focus): burnt orange #EA580C, dark #9A3412, light #FFEDD5
+- Accent (AI highlights): rose #E11D48 with light tint #FFE4E6
+- Info (audio waves, neutral info): amber gold #D97706 with light #FEF3C7
+- Success (transcribed, done): green #10B981 (kept as complementary contrast)
+- Warning (in-progress): yellow #CA8A04 with light #FEF9C3
+- Error (destructive): red #DC2626
+
+Gradient primary: linear-gradient(135deg, #EA580C 0%, #E11D48 55%, #D97706 100%) used in primary buttons, brand mark, audio cover.
+
+Typography pairing: Fraunces (serif, italic for emphasis) for display/headings/wordmark "Meus*Áudios*"; Plus Jakarta Sans for body and UI; JetBrains Mono for timestamps and shortcuts. Avoid Inter.
 
 Create responsive screens for desktop and mobile.
 
 Main screens:
-- Landing page
-- Login
-- Dashboard
-- Audio library with folder sidebar
-- Upload modal or drawer
-- Audio detail page with player, transcript and AI analysis panel
-- Templates gallery
-- Settings page
+- Landing page (hero with title "Seus áudios organizados, transcritos e inteligentes." mockup, how-it-works 3 steps, use cases)
+- Login / Register
+- Dashboard (greeting, 4 metric cards, recent audios, recent folders, recommended templates)
+- Audio library with folder sidebar (grid/list toggle, filter tabs)
+- Upload modal/drawer (dropzone, file list, folder, language, content type, tags)
+- Audio detail page (cover, breadcrumb, player with waveform, transcript with timestamps, AI panel with question box + template cards + history, notes by timestamp)
+- Templates gallery (cards by category)
+- Settings (profile, preferences, usage)
 
-The authenticated app should have a left sidebar with the MeusÁudios logo, main navigation and folder tree. It should have a topbar with breadcrumbs, global search, upload button and user avatar.
+Authenticated shell: left sidebar with MeusÁudios logo (gradient mark with audio waveform icon), upload CTA button (gradient), main navigation, folder tree with colored swatches and counters, plan footer with progress bar. Topbar with breadcrumb, global search input with ⌘K, notification + settings icons, user avatar with gradient.
 
-The audio detail page should be the most polished screen. It needs an audio player with waveform/progress bar, playback controls, speed control, metadata, tags, transcript viewer/editor, timestamp notes, AI question input, analysis template cards and analysis history.
+The audio detail page should be the most polished screen.
 
-Use Portuguese labels in the UI. Keep the interface elegant, readable and pleasant for long sessions.
+Use Portuguese (pt-BR) labels in the UI. Keep the interface elegant, readable and pleasant for long sessions.
 ```
