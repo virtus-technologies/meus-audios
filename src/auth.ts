@@ -1,53 +1,21 @@
-import NextAuth, { type NextAuthConfig } from "next-auth";
-import type { Provider } from "next-auth/providers";
-import Google from "next-auth/providers/google";
+import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
+import authConfig from "@/auth.config";
 import { prisma } from "@/lib/db";
 
 /**
- * Lista de providers ativada conforme variáveis de ambiente disponíveis.
+ * Config completo do NextAuth (Node runtime apenas — usa Prisma adapter).
  *
- * Mantém o build verde quando rodando em dev/CI sem credenciais reais — o
- * provider só é registrado quando as duas envs do par existem.
+ * Este export é usado nos route handlers (`src/app/api/auth/...`) e nos
+ * helpers de servidor (`src/lib/auth.ts`).
  *
- * - Google: `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` (VIR-13, ticket #09)
- * - Credentials: a ser adicionado em VIR-12 (ticket #08) com email + senha
+ * O middleware (`src/middleware.ts`) NÃO importa daqui — usa
+ * `src/auth.config.ts` diretamente, pois roda no Edge runtime onde o
+ * Prisma Client não funciona.
  */
-function buildProviders(): Provider[] {
-  const providers: Provider[] = [];
-
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    providers.push(
-      Google({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      }),
-    );
-  }
-
-  return providers;
-}
-
-export const authConfig: NextAuthConfig = {
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  providers: buildProviders(),
   session: { strategy: "database" },
-  pages: {
-    signIn: "/login",
-  },
-  callbacks: {
-    /**
-     * Inclui o `id` do usuário na sessão para que `auth()` retorne
-     * `session.user.id` consistentemente em route handlers e server actions.
-     */
-    async session({ session, user }) {
-      if (session.user && user) {
-        session.user.id = user.id;
-      }
-      return session;
-    },
-  },
-};
-
-export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);
+  ...authConfig,
+});
