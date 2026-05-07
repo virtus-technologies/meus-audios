@@ -97,6 +97,38 @@ preview/          # Preview HTML estático (referência visual)
 docs/             # Specs do produto
 ```
 
+## Deploy (Vercel)
+
+O repositório já está linkado ao projeto Vercel `meus-audios` (vide `.vercel/project.json`). Pushes em `main` disparam deploy de produção; PRs ganham preview deployment automaticamente.
+
+### Variáveis de ambiente em produção
+
+Configurar via **Vercel Dashboard** → projeto → **Settings → Environment Variables**:
+
+| Variável | Origem | Tickets |
+| --- | --- | --- |
+| `DATABASE_URL` | Neon/Postgres marketplace | #02 |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Storage → Blob | #03 |
+| `AUTH_SECRET` | `openssl rand -base64 32` | #04 |
+| `AUTH_URL` | auto-detectado na Vercel | #04 |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Cloud Console → OAuth client | #09 |
+| `OPENAI_API_KEY` | OpenAI dashboard | #28+ |
+
+Sincronizar também em Preview e Development com valores não-prod onde aplicável. Para puxar localmente: `vercel env pull .env.local`.
+
+### CI
+
+`.github/workflows/ci.yml` roda em cada PR e push para `main`:
+
+- `npm ci`
+- `prisma generate`
+- `npm run typecheck`
+- `npm run lint`
+- `npm run format:check`
+- `npm run build`
+
+Variáveis de ambiente de placeholder são suficientes para os checks.
+
 ## Tickets
 
 Backlog completo em [Linear · projeto meus-audios](https://linear.app/virtus-technologies/project/meus-audios-77834a2a7d8c). Ordem de implementação codificada no prefixo `[#NN]` do título — sort alfabético respeita dependências.
