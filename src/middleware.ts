@@ -56,12 +56,15 @@ export default auth((req) => {
 
 /**
  * Aplica em todas as rotas exceto:
- *  - assets do Next (`_next/static`, `_next/image`)
- *  - favicon
- *  - assets em `/preview` (HTML estático de referência visual)
+ *  - assets do Next (`_next/static`, `_next/image`, `_next/data`)
+ *  - arquivos públicos com extensão clássica (favicon, robots, sitemap, OG images)
+ *  - HTML estático de referência em `/preview`
  *
- * Decisão sobre proteger ou liberar é centralizada em `isPublicPath()`.
+ * `_next/data` foi adicionado para evitar overhead em requests de
+ * ISR/static data do App Router.
+ *
+ * Decisão sobre proteger ou liberar fica centralizada em `isPublicPath()`.
  */
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon\\.ico|preview).*)"],
+  matcher: ["/((?!_next/static|_next/image|_next/data|favicon\\.ico|robots\\.txt|sitemap\\.xml|preview).*)"],
 };
