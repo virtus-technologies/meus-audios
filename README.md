@@ -32,15 +32,27 @@ npm install
 # 2. Copiar variáveis de ambiente (preencher conforme tickets futuros)
 cp .env.example .env.local
 
-# 3. Provisionar Postgres e setar DATABASE_URL no .env.local
-#    Recomendado: Vercel Marketplace → Neon Postgres
-#    https://vercel.com/marketplace/neon
-#    Após provisionar, rodar a primeira migration:
+# 3. Subir Postgres local via Docker (recomendado para dev)
+npm run db:up
+
+# 4. Aplicar migrations no banco local
 npm run db:migrate -- --name init
 
-# 4. Rodar dev server
+# 5. Rodar dev server
 npm run dev
 ```
+
+### Postgres local com Docker
+
+A pilha de dev usa Postgres 16 Alpine via `docker-compose.yml`. O `.env.example` já vem com a `DATABASE_URL` apontando para o container, basta copiar.
+
+```bash
+npm run db:up      # sobe o container (porta 5432, volume nomeado)
+npm run db:logs    # tail dos logs
+npm run db:down    # derruba o container (dados persistem no volume)
+```
+
+Credenciais padrão (apenas dev): user `meus_audios`, senha `meus_audios_dev`, db `meus_audios`. Para produção provisionar via Vercel Marketplace (Neon) ou outro provider e sobrescrever `DATABASE_URL` em `.env.production` / variáveis Vercel.
 
 ### Tasks disponíveis
 
@@ -51,6 +63,9 @@ npm run dev
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript sem emit |
 | `npm run format` | Prettier write |
+| `npm run db:up` | Sobe Postgres local via Docker |
+| `npm run db:down` | Derruba container (volume preserva dados) |
+| `npm run db:logs` | Tail dos logs do container |
 | `npm run db:generate` | Regenerar cliente Prisma |
 | `npm run db:migrate` | Criar e aplicar migration em dev |
 | `npm run db:migrate:deploy` | Aplicar migrations em produção |
