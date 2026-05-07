@@ -12,6 +12,32 @@ export type CurrentUser = {
 };
 
 /**
+ * Lançada por `requireOwnership` quando o usuário atual não é dono do
+ * recurso. Route handlers devem capturar e responder HTTP 403.
+ */
+export class ForbiddenError extends Error {
+  readonly httpStatus = 403 as const;
+
+  constructor(message = "Recurso pertence a outro usuário.") {
+    super(message);
+    this.name = "ForbiddenError";
+  }
+}
+
+/**
+ * Lançada quando não há sessão e o caller não pode redirecionar (ex.: API
+ * route handler). Route handlers devem capturar e responder HTTP 401.
+ */
+export class UnauthorizedError extends Error {
+  readonly httpStatus = 401 as const;
+
+  constructor(message = "Autenticação requerida.") {
+    super(message);
+    this.name = "UnauthorizedError";
+  }
+}
+
+/**
  * Retorna o usuário autenticado atual ou `null`. Use em rotas que aceitam
  * tanto público quanto autenticado.
  */
@@ -39,13 +65,29 @@ export async function requireUser(): Promise<CurrentUser> {
 }
 
 /**
- * Garante que `resourceUserId` pertence ao usuário atual. Lança erro caso
- * contrário. Use sempre que receber um id de recurso vindo do client.
+ * Garante que `resourceUserId` pertence ao usuário atual.
+ *
+ * Lança `ForbiddenError` (HTTP 403) caso contrário. Use sempre que
+ * receber um id de recurso vindo do client; route handlers devem
+ * capturar `ForbiddenError` e devolver `Response.json({...}, { status: err.httpStatus })`.
  */
 export async function requireOwnership(resourceUserId: string): Promise<CurrentUser> {
   const user = await requireUser();
   if (user.id !== resourceUserId) {
-    throw new Error("Forbidden: recurso pertence a outro usuário.");
+    throw new ForbiddenError();
+  }
+  return user;
+}
+
+/**
+ * Variante de `requireUser` que lança `UnauthorizedError` (HTTP 401) em
+ * vez de redirecionar. Use em route handlers (`/api/*`) onde redirecionar
+ * para `/login` não faz sentido.
+ */
+export async function requireUserApi(): Promise<CurrentUser> {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new UnauthorizedError();
   }
   return user;
 }
