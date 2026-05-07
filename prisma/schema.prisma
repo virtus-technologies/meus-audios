@@ -1,0 +1,182 @@
+// MeusÁudios — Prisma schema
+// Conforme docs/plano-de-implementacao.md seção 6.
+//
+// Nota sobre User: o modelo será introduzido em VIR-7 (#04 NextAuth) junto
+// com Account/Session/VerificationToken, pois depende da solução de
+// autenticação escolhida. Aqui mantemos `userId String` em cada entidade
+// como placeholder relacional simples — a FK para User será adicionada
+// quando a tabela existir.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Pastas (organização lógica) ───────────────────────────────
+
+model Folder {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  parentId  String?
+  path      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parent   Folder?  @relation("FolderTree", fields: [parentId], references: [id])
+  children Folder[] @relation("FolderTree")
+  audios   Audio[]
+
+  @@index([userId])
+  @@index([parentId])
+}
+
+// ─── Áudios ────────────────────────────────────────────────────
+
+enum AudioStatus {
+  UPLOADED
+  TRANSCRIPTION_PENDING
+  TRANSCRIBING
+  TRANSCRIBED
+  TRANSCRIPTION_FAILED
+  ANALYSIS_PENDING
+  ANALYZING
+  ANALYZED
+  ANALYSIS_FAILED
+}
+
+model Audio {
+  id               String      @id @default(cuid())
+  userId           String
+  folderId         String?
+  title            String
+  description      String?
+  originalFileName String
+  mimeType         String
+  sizeBytes        Int
+  durationSeconds  Int?
+  blobUrl          String
+  storageKey       String      @unique
+  status           AudioStatus @default(UPLOADED)
+  language         String?
+  contentType      String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  folder     Folder?         @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  transcript Transcript?
+  analyses   AudioAnalysis[]
+  notes      AudioNote[]
+  tags       AudioTag[]
+
+  @@index([userId])
+  @@index([folderId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ─── Transcrições ──────────────────────────────────────────────
+
+model Transcript {
+  id           String   @id @default(cuid())
+  audioId      String   @unique
+  userId       String
+  language     String
+  fullText     String
+  segmentsJson Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  audio Audio @relation(fields: [audioId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ─── Templates de análise ──────────────────────────────────────
+
+model AnalysisTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  category    String
+  prompt      String
+  isSystem    Boolean  @default(false)
+  userId      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  analyses AudioAnalysis[]
+
+  @@index([userId])
+  @@index([category])
+  @@index([isSystem])
+}
+
+// ─── Análises com IA ───────────────────────────────────────────
+
+model AudioAnalysis {
+  id         String   @id @default(cuid())
+  audioId    String
+  userId     String
+  templateId String?
+  question   String?
+  result     String
+  resultJson Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  audio    Audio             @relation(fields: [audioId], references: [id], onDelete: Cascade)
+  template AnalysisTemplate? @relation(fields: [templateId], references: [id])
+
+  @@index([audioId])
+  @@index([userId])
+  @@index([templateId])
+}
+
+// ─── Tags ──────────────────────────────────────────────────────
+
+model Tag {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  audios AudioTag[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model AudioTag {
+  audioId String
+  tagId   String
+
+  audio Audio @relation(fields: [audioId], references: [id], onDelete: Cascade)
+  tag   Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([audioId, tagId])
+  @@index([tagId])
+}
+
+// ─── Notas por timestamp ───────────────────────────────────────
+
+model AudioNote {
+  id               String   @id @default(cuid())
+  audioId          String
+  userId           String
+  timestampSeconds Int
+  text             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  audio Audio @relation(fields: [audioId], references: [id], onDelete: Cascade)
+
+  @@index([audioId])
+  @@index([userId])
+  @@index([timestampSeconds])
+}

@@ -26,23 +26,36 @@ A paleta e a tipografia (Plus Jakarta Sans + Fraunces + JetBrains Mono) seguem `
 ## Setup local
 
 ```bash
-# 1. Instalar dependências
+# 1. Instalar dependências (gera o cliente Prisma via postinstall)
 npm install
 
 # 2. Copiar variáveis de ambiente (preencher conforme tickets futuros)
 cp .env.example .env.local
 
-# 3. Rodar dev server
-npm run dev
+# 3. Provisionar Postgres e setar DATABASE_URL no .env.local
+#    Recomendado: Vercel Marketplace → Neon Postgres
+#    https://vercel.com/marketplace/neon
+#    Após provisionar, rodar a primeira migration:
+npm run db:migrate -- --name init
 
-# Outras tasks
-npm run lint        # ESLint
-npm run typecheck   # TS sem emit
-npm run format      # Prettier write
-npm run build       # Build de produção
+# 4. Rodar dev server
+npm run dev
 ```
 
-A aplicação sobe em `http://localhost:3000`.
+### Tasks disponíveis
+
+| Comando | Descrição |
+| --- | --- |
+| `npm run dev` | Dev server em `http://localhost:3000` |
+| `npm run build` | Build de produção |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript sem emit |
+| `npm run format` | Prettier write |
+| `npm run db:generate` | Regenerar cliente Prisma |
+| `npm run db:migrate` | Criar e aplicar migration em dev |
+| `npm run db:migrate:deploy` | Aplicar migrations em produção |
+| `npm run db:studio` | Abrir Prisma Studio (UI do banco) |
+| `npm run db:reset` | Resetar banco e re-aplicar migrations (destrutivo) |
 
 ## Estrutura de pastas
 
