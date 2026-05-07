@@ -1,11 +1,8 @@
 // MeusÁudios — Prisma schema
 // Conforme docs/plano-de-implementacao.md seção 6.
 //
-// Nota sobre User: o modelo será introduzido em VIR-7 (#04 NextAuth) junto
-// com Account/Session/VerificationToken, pois depende da solução de
-// autenticação escolhida. Aqui mantemos `userId String` em cada entidade
-// como placeholder relacional simples — a FK para User será adicionada
-// quando a tabela existir.
+// User/Account/Session/VerificationToken seguem o contrato do
+// `@auth/prisma-adapter` (NextAuth v5 / Auth.js).
 
 generator client {
   provider = "prisma-client-js"
@@ -14,6 +11,68 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ─── Auth (NextAuth Prisma adapter) ────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  folders     Folder[]
+  audios      Audio[]
+  transcripts Transcript[]
+  templates   AnalysisTemplate[]
+  analyses    AudioAnalysis[]
+  tags        Tag[]
+  notes       AudioNote[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 // ─── Pastas (organização lógica) ───────────────────────────────
@@ -27,6 +86,7 @@ model Folder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   parent   Folder?  @relation("FolderTree", fields: [parentId], references: [id])
   children Folder[] @relation("FolderTree")
   audios   Audio[]
@@ -67,6 +127,7 @@ model Audio {
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   folder     Folder?         @relation(fields: [folderId], references: [id], onDelete: SetNull)
   transcript Transcript?
   analyses   AudioAnalysis[]
@@ -92,6 +153,7 @@ model Transcript {
   updatedAt    DateTime @updatedAt
 
   audio Audio @relation(fields: [audioId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -109,6 +171,7 @@ model AnalysisTemplate {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  user     User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   analyses AudioAnalysis[]
 
   @@index([userId])
@@ -131,6 +194,7 @@ model AudioAnalysis {
 
   audio    Audio             @relation(fields: [audioId], references: [id], onDelete: Cascade)
   template AnalysisTemplate? @relation(fields: [templateId], references: [id])
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([audioId])
   @@index([userId])
@@ -146,6 +210,7 @@ model Tag {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   audios AudioTag[]
 
   @@unique([userId, name])
@@ -175,6 +240,7 @@ model AudioNote {
   updatedAt        DateTime @updatedAt
 
   audio Audio @relation(fields: [audioId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([audioId])
   @@index([userId])
