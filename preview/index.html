@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MeusÁudios — Preview de design</title>
+<title>MeusÁudios — Preview de design (versão laranja)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,30..100&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -12,8 +12,8 @@
     --primary: #4F46E5;
     --primary-dark: #3730A3;
     --primary-light: #EEF2FF;
-    --purple: #7C3AED;
-    --purple-light: #F3E8FF;
+    --purple: #F97316;
+    --purple-light: #FFEDD5;
     --cyan: #06B6D4;
     --cyan-light: #ECFEFF;
     --success: #10B981;
@@ -32,10 +32,10 @@
     --text-secondary: #475569;
     --text-muted: #94A3B8;
 
-    --gradient-primary: linear-gradient(135deg, #4F46E5 0%, #7C3AED 55%, #06B6D4 100%);
-    --gradient-soft: linear-gradient(135deg, #EEF2FF 0%, #F3E8FF 50%, #ECFEFF 100%);
+    --gradient-primary: linear-gradient(135deg, #4F46E5 0%, #F97316 55%, #06B6D4 100%);
+    --gradient-soft: linear-gradient(135deg, #EEF2FF 0%, #FFEDD5 50%, #ECFEFF 100%);
     --gradient-mesh: radial-gradient(at 20% 0%, #EEF2FF 0px, transparent 50%),
-                     radial-gradient(at 80% 0%, #F3E8FF 0px, transparent 50%),
+                     radial-gradient(at 80% 0%, #FFEDD5 0px, transparent 50%),
                      radial-gradient(at 50% 100%, #ECFEFF 0px, transparent 50%);
 
     --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
@@ -145,7 +145,7 @@
   .badge-warning { background: var(--warning-light); color: #B45309; }
   .badge-error   { background: var(--error-light);   color: #B91C1C; }
   .badge-info    { background: var(--primary-light); color: var(--primary-dark); }
-  .badge-ai      { background: var(--purple-light);  color: #6D28D9; }
+  .badge-ai      { background: var(--purple-light);  color: #9A3412; }
   .badge-cyan    { background: var(--cyan-light);    color: #0E7490; }
   .badge-muted   { background: var(--surface-muted); color: var(--text-secondary); }
   .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
@@ -722,7 +722,7 @@
   }
   .ai-panel::before {
     content: ""; position: absolute; inset: 0;
-    background: radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.08) 0%, transparent 40%),
+    background: radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
                 radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
     pointer-events: none;
   }
@@ -750,7 +750,7 @@
     background: white;
     transition: all 0.2s ease;
   }
-  .ai-input:focus-within { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(124,58,237,0.1); }
+  .ai-input:focus-within { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(249,115,22,0.1); }
   .ai-input textarea {
     width: 100%; border: 0; outline: 0;
     resize: none; min-height: 56px;
@@ -1711,8 +1711,8 @@
             </div>
 
             <div class="lib-card">
-              <div class="cover" style="background: linear-gradient(135deg, #F3E8FF, #EDE9FE);">
-                <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round">
+              <div class="cover" style="background: linear-gradient(135deg, #FFEDD5, #FED7AA);">
+                <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="#F97316" stroke-width="2" stroke-linecap="round">
                   <line x1="2" y1="20" x2="2" y2="20"/><line x1="6" y1="16" x2="6" y2="24"/><line x1="10" y1="10" x2="10" y2="30"/><line x1="14" y1="14" x2="14" y2="26"/><line x1="18" y1="6" x2="18" y2="34"/><line x1="22" y1="12" x2="22" y2="28"/><line x1="26" y1="8" x2="26" y2="32"/><line x1="30" y1="2" x2="30" y2="38"/><line x1="34" y1="10" x2="34" y2="30"/><line x1="38" y1="6" x2="38" y2="34"/><line x1="42" y1="14" x2="42" y2="26"/><line x1="46" y1="8" x2="46" y2="32"/><line x1="50" y1="12" x2="50" y2="28"/><line x1="54" y1="6" x2="54" y2="34"/><line x1="58" y1="14" x2="58" y2="26"/><line x1="62" y1="10" x2="62" y2="30"/><line x1="66" y1="16" x2="66" y2="24"/><line x1="70" y1="14" x2="70" y2="26"/><line x1="74" y1="18" x2="74" y2="22"/><line x1="78" y1="20" x2="78" y2="20"/>
                 </svg>
                 <button class="play-btn">
