@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 import { requireUser } from "@/lib/auth";
-import { deleteAudio, moveAudio, updateAudio } from "@/services/audio-service";
+import { deleteAudio, moveAudio, setAudioFavorite, updateAudio } from "@/services/audio-service";
 import { moveAudioSchema, updateAudioSchema } from "@/lib/validations";
 
 export type AudioActionResult = { ok: true } | { ok: false; error: string };
@@ -44,6 +44,28 @@ export async function moveAudioAction(input: {
     revalidatePath(`/audios/${input.audioId}`);
     revalidatePath("/audios");
     revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : "Erro." };
+  }
+}
+
+export async function toggleFavoriteAction(input: {
+  audioId: string;
+  isFavorite?: boolean;
+}): Promise<AudioActionResult> {
+  const user = await requireUser();
+  try {
+    await setAudioFavorite({
+      userId: user.id,
+      audioId: input.audioId,
+      isFavorite: input.isFavorite,
+    });
+    revalidatePath(`/audios/${input.audioId}`);
+    revalidatePath("/audios");
+    revalidatePath("/favorites");
+    revalidatePath("/recents");
+    revalidatePath("/dashboard");
     return { ok: true };
   } catch (error) {
     return { ok: false, error: error instanceof Error ? error.message : "Erro." };

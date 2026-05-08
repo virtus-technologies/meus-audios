@@ -103,6 +103,7 @@ export async function listAudios(input: {
   userId: string;
   folderId?: string | null;
   status?: AudioStatus;
+  isFavorite?: boolean;
   limit?: number;
   offset?: number;
 }): Promise<Audio[]> {
@@ -111,10 +112,25 @@ export async function listAudios(input: {
       userId: input.userId,
       ...(input.folderId !== undefined ? { folderId: input.folderId } : {}),
       ...(input.status ? { status: input.status } : {}),
+      ...(input.isFavorite !== undefined ? { isFavorite: input.isFavorite } : {}),
     },
     orderBy: { createdAt: "desc" },
     take: input.limit ?? 50,
     skip: input.offset ?? 0,
+  });
+}
+
+export async function setAudioFavorite(input: {
+  userId: string;
+  audioId: string;
+  isFavorite?: boolean;
+}): Promise<Audio> {
+  const audio = await loadAudioForUser(input.audioId, input.userId);
+  const next = input.isFavorite ?? !audio.isFavorite;
+  if (next === audio.isFavorite) return audio;
+  return prisma.audio.update({
+    where: { id: audio.id },
+    data: { isFavorite: next },
   });
 }
 
