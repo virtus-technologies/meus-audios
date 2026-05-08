@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { AuthDivider } from "../divider";
+import { GoogleButton } from "../google-button";
 import { LoginForm } from "./login-form";
 
 type LoginPageProps = {
@@ -15,6 +17,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <p className="mb-6 text-sm text-muted-foreground">
         Bem-vindo de volta. Use seu email e senha para continuar.
       </p>
+
+      <GoogleButton callbackUrl={callbackUrl} />
+      {process.env.GOOGLE_CLIENT_ID ? <AuthDivider /> : null}
 
       <LoginForm callbackUrl={callbackUrl} />
 
