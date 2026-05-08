@@ -1,25 +1,20 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
+import type { FolderTreeNode } from "@/components/folders/folder-tree";
 
 type AppShellProps = {
   children: React.ReactNode;
+  folders: ReadonlyArray<FolderTreeNode>;
   breadcrumbs?: ReadonlyArray<{ label: string; href?: string; current?: boolean }>;
   userInitials?: string;
 };
 
-/**
- * Layout autenticado padrão: sidebar fixa à esquerda no desktop, topbar
- * sticky e área principal rolável.
- *
- * No mobile (≤ 1024px) a sidebar é escondida — o drawer mobile virá em
- * iteração separada usando shadcn `Sheet` (fora do escopo do MVP foundation).
- */
-export function AppShell({ children, breadcrumbs, userInitials }: AppShellProps) {
+export function AppShell({ children, folders, breadcrumbs, userInitials }: AppShellProps) {
   return (
     <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[264px_1fr]">
       <div className="hidden lg:block">
         <div className="sticky top-0 h-screen">
-          <Sidebar />
+          <Sidebar folders={folders} />
         </div>
       </div>
 
