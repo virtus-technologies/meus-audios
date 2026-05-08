@@ -65,6 +65,7 @@ export async function toggleFavoriteAction(input: {
     revalidatePath("/audios");
     revalidatePath("/favorites");
     revalidatePath("/recents");
+    revalidatePath("/dashboard");
     return { ok: true };
   } catch (error) {
     return { ok: false, error: error instanceof Error ? error.message : "Erro." };

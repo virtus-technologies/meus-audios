@@ -12,21 +12,22 @@ type AudioCardProps = {
 
 export function AudioCard({ audio }: AudioCardProps) {
   return (
-    <Link
-      href={`/audios/${audio.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition hover:-translate-y-0.5 hover:border-transparent hover:shadow-lg"
-    >
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition hover:-translate-y-0.5 hover:border-transparent hover:shadow-lg">
+      <Link
+        href={`/audios/${audio.id}`}
+        className="absolute inset-0 z-0"
+        aria-label={audio.title}
+      >
+        <span className="sr-only">Abrir {audio.title}</span>
+      </Link>
+
       <div className="relative grid h-28 place-items-center bg-gradient-soft">
         <Waveform />
-        <FavoriteButton
-          audioId={audio.id}
-          initialFavorite={audio.isFavorite}
-          className="absolute right-3 top-3"
-        />
         <span className="absolute bottom-3 right-3 grid h-10 w-10 translate-y-2 place-items-center rounded-full bg-foreground text-surface opacity-0 shadow-lg transition group-hover:translate-y-0 group-hover:opacity-100">
           <Play className="h-3.5 w-3.5 fill-current" />
         </span>
       </div>
+
       <div className="flex flex-col gap-3 p-4">
         <div className="flex flex-col gap-0.5">
           <h4 className="line-clamp-1 font-semibold">{audio.title}</h4>
@@ -38,7 +39,13 @@ export function AudioCard({ audio }: AudioCardProps) {
           <AudioStatusBadge status={audio.status} />
         </div>
       </div>
-    </Link>
+
+      <FavoriteButton
+        audioId={audio.id}
+        initialFavorite={audio.isFavorite}
+        className="absolute right-3 top-3 z-10"
+      />
+    </article>
   );
 }
 
