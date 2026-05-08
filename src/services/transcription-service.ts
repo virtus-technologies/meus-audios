@@ -7,6 +7,7 @@ import { prisma } from "@/lib/db";
 import { ForbiddenError } from "@/lib/auth";
 import { NotFoundError, ValidationError } from "@/lib/api-error";
 import { getOpenAIClient } from "@/lib/ai/openai";
+import { logger, withTimedLog } from "@/lib/logger";
 
 export type TranscriptSegment = {
   start: number;
@@ -42,6 +43,17 @@ export async function transcribeAudio(input: {
     where: { id: audio.id },
     data: { status: "TRANSCRIBING" },
   });
+
+  return withTimedLog(
+    { baseEvent: "audio.transcription", userId: input.userId, audioId: input.audioId },
+    () => runTranscription(audio.id, audio),
+  );
+}
+
+type AudioRecord = Awaited<ReturnType<typeof loadAudioForUser>>;
+
+async function runTranscription(audioId: string, audio: AudioRecord): Promise<Transcript> {
+  void audioId;
 
   try {
     const response = await fetch(audio.blobUrl);
@@ -110,7 +122,11 @@ export async function transcribeAudio(input: {
       where: { id: audio.id },
       data: { status: "TRANSCRIPTION_FAILED" },
     });
-    console.error("[transcription] failed", { audioId: audio.id, error });
+    logger.error({
+      event: "audio.transcription.fallback",
+      audioId: audio.id,
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw error;
   }
 }
