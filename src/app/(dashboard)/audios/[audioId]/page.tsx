@@ -4,10 +4,13 @@ import { AudioLines } from "lucide-react";
 import { requireUser, ForbiddenError } from "@/lib/auth";
 import { NotFoundError } from "@/lib/api-error";
 import { getAudioById } from "@/services/audio-service";
+import { getTranscript } from "@/services/transcription-service";
 import { AudioPlayer } from "@/components/audios/audio-player";
 import { AudioMetadataPanel } from "@/components/audios/audio-metadata-panel";
 import { AudioDeleteButton } from "@/components/audios/audio-delete-button";
 import { AudioStatusBadge } from "@/components/audios/audio-status-badge";
+import { TranscriptViewer } from "@/components/audios/transcript-viewer";
+import { TranscribeButton } from "@/components/audios/transcribe-button";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { formatDuration } from "@/lib/format";
 
@@ -28,6 +31,8 @@ export default async function AudioPage({ params }: AudioPageProps) {
     }
     throw error;
   }
+
+  const transcript = await getTranscript(audio.id, user.id);
 
   return (
     <div className="flex flex-col gap-6">
@@ -66,19 +71,21 @@ export default async function AudioPage({ params }: AudioPageProps) {
             ) : null}
           </div>
         </div>
-        <AudioDeleteButton audioId={audio.id} title={audio.title} />
+        <div className="flex flex-col items-end gap-2">
+          <TranscribeButton audioId={audio.id} status={audio.status} />
+          <AudioDeleteButton audioId={audio.id} title={audio.title} />
+        </div>
       </header>
 
       <AudioPlayer src={audio.blobUrl} initialDurationSeconds={audio.durationSeconds} />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h2 className="font-display text-xl font-medium tracking-tight">Transcrição</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Esta seção real chega em VIR-37 (`[#30]`). O serviço de transcrição (Whisper) está
-            programado para VIR-35 / VIR-36.
-          </p>
-        </section>
+        <TranscriptViewer
+          audioId={audio.id}
+          status={audio.status}
+          transcript={transcript}
+          audioTitle={audio.title}
+        />
 
         <AudioMetadataPanel audio={audio} />
       </div>
