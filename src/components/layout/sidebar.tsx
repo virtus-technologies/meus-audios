@@ -1,8 +1,9 @@
-import { AudioLines, Clock, LayoutGrid, Sparkles, Star, Upload } from "lucide-react";
+import { AudioLines, Clock, LayoutGrid, Sparkles, Star } from "lucide-react";
 
 import { Brand } from "@/components/layout/brand";
 import { NavItem } from "@/components/layout/nav-item";
 import { FolderTree, type FolderTreeNode } from "@/components/folders/folder-tree";
+import { UploadButton } from "@/components/upload/upload-button";
 
 type SidebarProps = {
   folders: ReadonlyArray<FolderTreeNode>;
@@ -15,16 +16,7 @@ export function Sidebar({ folders }: SidebarProps) {
         <Brand showSubtitle />
       </div>
 
-      <button
-        type="button"
-        className="flex items-center gap-2.5 rounded-2xl bg-gradient-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition hover:-translate-y-px"
-      >
-        <Upload className="h-4 w-4" strokeWidth={1.75} />
-        Enviar áudio
-        <span className="ml-auto rounded-md bg-white/20 px-2 py-0.5 font-mono text-[11px] font-medium">
-          U
-        </span>
-      </button>
+      <UploadButton />
 
       <nav className="flex flex-col gap-px">
         <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
