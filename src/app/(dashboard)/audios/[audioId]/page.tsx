@@ -5,6 +5,9 @@ import { requireUser, ForbiddenError } from "@/lib/auth";
 import { NotFoundError } from "@/lib/api-error";
 import { getAudioById } from "@/services/audio-service";
 import { getTranscript } from "@/services/transcription-service";
+import { listAnalyses } from "@/services/analysis-service";
+import { prisma } from "@/lib/db";
+import { AnalysisPanel } from "@/components/analyses/analysis-panel";
 import { AudioPlayer } from "@/components/audios/audio-player";
 import { AudioMetadataPanel } from "@/components/audios/audio-metadata-panel";
 import { AudioDeleteButton } from "@/components/audios/audio-delete-button";
@@ -32,7 +35,14 @@ export default async function AudioPage({ params }: AudioPageProps) {
     throw error;
   }
 
-  const transcript = await getTranscript(audio.id, user.id);
+  const [transcript, analyses, templates] = await Promise.all([
+    getTranscript(audio.id, user.id),
+    listAnalyses({ userId: user.id, audioId: audio.id }),
+    prisma.analysisTemplate.findMany({
+      where: { OR: [{ isSystem: true }, { userId: user.id }] },
+      orderBy: [{ category: "asc" }, { name: "asc" }],
+    }),
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -87,7 +97,26 @@ export default async function AudioPage({ params }: AudioPageProps) {
           audioTitle={audio.title}
         />
 
-        <AudioMetadataPanel audio={audio} />
+        <div className="flex flex-col gap-6">
+          <AudioMetadataPanel audio={audio} />
+          <AnalysisPanel
+            audioId={audio.id}
+            hasTranscript={Boolean(transcript)}
+            templates={templates.map((template) => ({
+              id: template.id,
+              name: template.name,
+              description: template.description,
+              category: template.category,
+            }))}
+            initialAnalyses={analyses.map((analysis) => ({
+              id: analysis.id,
+              question: analysis.question,
+              templateId: analysis.templateId,
+              result: analysis.result,
+              createdAt: analysis.createdAt,
+            }))}
+          />
+        </div>
       </div>
     </div>
   );
