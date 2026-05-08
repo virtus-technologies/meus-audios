@@ -1,6 +1,7 @@
-import { Bell, Search, Settings } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { CommandPalette } from "@/components/search/command-palette";
 
 type TopbarProps = {
   breadcrumbs?: ReadonlyArray<{ label: string; href?: string; current?: boolean }>;
@@ -9,7 +10,7 @@ type TopbarProps = {
 
 export function Topbar({ breadcrumbs = [], userInitials = "MA" }: TopbarProps) {
   return (
-    <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b border-border bg-surface/70 px-7 backdrop-blur-md">
+    <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-border bg-surface/70 px-7 backdrop-blur-md">
       <nav
         className="flex items-center gap-2 text-sm text-muted-foreground"
         aria-label="Breadcrumb"
@@ -33,20 +34,8 @@ export function Topbar({ breadcrumbs = [], userInitials = "MA" }: TopbarProps) {
         ))}
       </nav>
 
-      <div className="relative ml-6 hidden max-w-xl flex-1 md:block">
-        <Search
-          className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-          aria-hidden
-        />
-        <input
-          type="search"
-          placeholder="Buscar em todos os áudios, transcrições e análises..."
-          className="h-10 w-full rounded-xl border border-border bg-surface-muted pl-10 pr-14 text-sm outline-none transition focus:border-primary focus:bg-surface focus:ring-4 focus:ring-primary/20"
-          aria-label="Busca global"
-        />
-        <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">
-          ⌘K
-        </span>
+      <div className="ml-6 hidden flex-1 md:block">
+        <CommandPalette />
       </div>
 
       <div className="ml-auto flex items-center gap-2">
