@@ -105,6 +105,11 @@ export async function logoutAction() {
   await signOut({ redirectTo: "/" });
 }
 
+export async function signInWithGoogleAction(formData: FormData): Promise<void> {
+  const callbackUrl = safeCallback(formData.get("callbackUrl"));
+  await signIn("google", { redirectTo: callbackUrl });
+}
+
 function flattenErrors(input: Record<string, string[] | undefined>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [key, value] of Object.entries(input)) {
