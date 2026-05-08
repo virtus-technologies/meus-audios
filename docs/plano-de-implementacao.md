@@ -1,5 +1,170 @@
 # MeusÁudios — Plano de Implementação e Decisões Técnicas
 
+## 0. Estado Implementado (MVP — 2026-05-08)
+
+Snapshot do que está em `main` após o MVP. Demais seções deste documento permanecem como referência da intenção original; quando algo divergiu, está sinalizado nesta seção.
+
+### Stack final
+
+| Camada | Escolhido | Justificativa |
+| --- | --- | --- |
+| Framework | Next.js 15 + React 19 (App Router) | Server Components + Server Actions + Edge middleware |
+| Linguagem | TypeScript estrito | Schema-first com Zod |
+| Estilização | Tailwind CSS 3 + shadcn/ui (Radix) | CSS variables com paleta laranja em `src/app/globals.css` |
+| Tipografia | `next/font/google`: Plus Jakarta Sans + Fraunces + JetBrains Mono | Conforme `docs/design.md` |
+| Banco | Postgres + Prisma 6 | Schema relacional completo em `prisma/schema.prisma` |
+| Banco local | Postgres 16 Alpine via `docker-compose.yml` | `npm run db:up` |
+| Auth | NextAuth v5 / Auth.js + `@auth/prisma-adapter` | Session strategy `jwt` (Credentials não suporta `database`) |
+| Storage | Vercel Blob (`@vercel/blob`) | Helper `src/lib/storage` com path-traversal protection |
+| Transcrição | OpenAI Whisper (`whisper-1`) | `verbose_json` + `segment` timestamps |
+| Análise IA | OpenAI Chat Completions (`gpt-4o-mini`) | Configurável por env `OPENAI_ANALYSIS_MODEL` |
+| Validação | Zod (schemas centralizados em `src/lib/validations/`) | Reuso entre route handlers, server actions e forms |
+| Logging | JSON estruturado em stdout (`src/lib/logger.ts`) | Auto-parse pela Vercel Observability |
+| CI | GitHub Actions (`.github/workflows/ci.yml`) | typecheck → lint → format:check → build |
+
+### Estrutura final de pastas
+
+```
+src/
+  app/
+    (auth)/                    # login, register, forgot-password, layout publico
+    (dashboard)/               # rotas autenticadas — layout chama requireUser()
+      dashboard/page.tsx
+      audios/
+        page.tsx               # biblioteca
+        [audioId]/page.tsx     # detalhe (player + transcript + IA + notas)
+      folders/[folderId]/page.tsx
+      templates/page.tsx
+      settings/page.tsx
+    api/
+      auth/[...nextauth]/route.ts
+      audios/
+        route.ts               # GET list
+        [audioId]/
+          route.ts             # GET PATCH DELETE
+          move/route.ts
+          transcribe/route.ts  # POST com maxDuration 300
+          transcript/route.ts  # GET PATCH
+          analyses/
+            route.ts           # GET POST (maxDuration 300)
+            [analysisId]/route.ts
+          notes/
+            route.ts
+            [noteId]/route.ts
+          tags/
+            route.ts
+            [tagId]/route.ts
+      folders/
+        route.ts
+        [folderId]/
+          route.ts
+          move/route.ts
+      tags/
+        route.ts
+        [tagId]/route.ts
+      templates/route.ts
+      search/route.ts
+      upload/audio/route.ts
+    page.tsx                   # landing
+  components/
+    analyses/                  # AnalysisPanel + actions
+    audios/                    # Card, Player, Status, Metadata, Notes, Transcript
+    folders/                   # Tree, Dialogs, Actions
+    layout/                    # AppShell, Sidebar, Topbar, Brand, Breadcrumb, NavItem
+    search/                    # CommandPalette
+    tags/                      # TagBadge
+    ui/                        # Button, Dialog, Input, EmptyState, Skeleton, Toast, ConfirmDialog
+    upload/                    # Provider, Dialog, Dropzone, Button
+  lib/
+    auth.ts                    # requireUser, requireUserApi, requireOwnership, ForbiddenError, UnauthorizedError
+    db.ts                      # Prisma singleton com hot-reload guard
+    api-error.ts               # apiError() converte ZodError/Forbidden/Prisma → HTTP
+    storage/                   # uploadAudio, deleteAudio, validateAudioFile (server-only)
+    ai/                        # OpenAI client + prompts
+    validations/               # auth, folders, audios, analyses, notes, tags
+    format.ts                  # formatDuration, formatRelativeTime, formatFileSize
+    logger.ts                  # withTimedLog helper
+    passwords.ts               # hashPassword, verifyPassword
+    utils.ts                   # cn() shadcn helper
+  services/                    # Lógica de domínio, sempre server-only
+    audio-service.ts
+    folder-service.ts
+    transcription-service.ts
+    analysis-service.ts
+    tag-service.ts
+    note-service.ts
+    search-service.ts
+    dashboard-service.ts
+    metrics-service.ts
+  middleware.ts                # Edge — usa src/auth.config.ts
+  auth.config.ts               # Lite (Edge-safe) — providers + callbacks
+  auth.ts                      # Completo — adapter Prisma + Credentials
+  types/next-auth.d.ts         # Augment Session.user.id
+prisma/
+  schema.prisma                # User/Account/Session/VerificationToken + domínio
+  seed-templates.ts            # 11 templates do sistema
+docker-compose.yml             # Postgres 16 Alpine local
+.github/workflows/ci.yml       # GitHub Actions
+```
+
+### Decisões críticas (com rationale)
+
+1. **Auth split em dois arquivos**
+   - `src/auth.config.ts` (Edge-safe, importado pelo middleware)
+   - `src/auth.ts` (Node, com Prisma adapter, importado por route handlers)
+   - Motivo: Prisma Client não roda no Edge runtime do Next.js. Sem split, o middleware quebra em produção.
+
+2. **Session strategy `jwt`**
+   - Credentials provider do Auth.js v5 não funciona com sessions em banco.
+   - Custo: a `Session` table do schema fica subutilizada (NextAuth ainda exige modelar para o adapter).
+
+3. **Erros estruturados em route handlers**
+   - `ForbiddenError` (HTTP 403) e `UnauthorizedError` (HTTP 401) em `src/lib/auth.ts`
+   - `ValidationError` e `NotFoundError` em `src/lib/api-error.ts`
+   - Helper `apiError(error)` converte estes (e `ZodError`, Prisma `P2002`/`P2025`) em `NextResponse` com status apropriado. Pattern em todos os route handlers.
+
+4. **Path traversal protection no storage**
+   - `STORAGE_ID_PATTERN = /^[a-zA-Z0-9_-]+$/` em `src/lib/storage`.
+   - `assertSafeStorageId()` valida `userId` e `audioId` antes de interpolar na chave do Blob.
+   - Cobre `cuid()` do Prisma e UUIDs convencionais.
+
+5. **Upload com compensação**
+   - `audio-service.ts.createAudio()` faz upload primeiro, depois `prisma.audio.create()`.
+   - Em erro de banco, executa `deleteAudioFromStorage(storageKey)` para evitar órfãos no Blob.
+
+6. **Transcrição com `withTimedLog`**
+   - Logger emite `audio.transcription.started` → `.completed` ou `.failed` com `durationMs` automaticamente.
+   - Mesmo padrão pode ser aplicado em upload e analysis.
+
+7. **Truncamento de transcrição em 80k chars**
+   - `MAX_TRANSCRIPT_CHARS = 80_000` em `analysis-service.ts`.
+   - Sinalizado no prompt para o modelo (`[transcrição truncada — texto muito longo]`).
+
+8. **Vercel Blob `access: "public"`**
+   - Limitação do SDK v1 — `put()` aceita só `"public"` como `access`.
+   - URL é unguessable graças ao prefixo `users/{userId}/audios/{audioId}/...`.
+   - Hardening com signed URLs fica em backlog.
+
+9. **Mock removido do FolderTree**
+   - `src/components/folders/folder-tree.tsx` consome dados reais via prop.
+   - `(dashboard)/layout.tsx` carrega árvore via `buildFolderTree(user.id)` no servidor.
+
+10. **CommandPalette client-side**
+    - `⌘K` global (com fallback `Ctrl+K`).
+    - Fetch debounced 200ms para `/api/search`.
+    - Resultados agrupados por tipo com ícones distintos.
+
+### Migrações pendentes (documentadas, não bloqueantes)
+
+- **Recuperação de senha real** depende de provider de email transacional (Resend/SES). Página `/forgot-password` é placeholder.
+- **Drawer mobile** da Sidebar — sidebar oculta em `<1024px` por enquanto.
+- **TagSelector visual** — APIs prontas; UI atual pede IDs separados por vírgula.
+- **Streaming de análises IA** — chamadas atuais são síncronas. AI SDK `streamText` é candidato.
+- **Job assíncrono para transcrição de arquivos longos** — atual usa `maxDuration: 300` direto na route.
+- **VIR-49 sugestão de tags via IA** — cancelado para MVP.
+
+A partir daqui, o documento original permanece como referência de intenção. Onde algo está descrito de forma genérica (ex.: "Auth.js ou Clerk"), a decisão real está acima.
+
 ## 1. Objetivo Técnico
 
 Construir uma aplicação web SaaS chamada MeusÁudios usando Next.js, React, TypeScript e Vercel. A aplicação deve permitir upload de arquivos de áudio, organização lógica em pastas, transcrição com IA, busca textual e análise inteligente do conteúdo transcrito.
