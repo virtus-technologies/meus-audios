@@ -1,18 +1,40 @@
 # MeusÁudios
 
-Aplicação SaaS para upload, organização, transcrição e análise inteligente de áudios.
+SaaS para upload, organização, transcrição e análise inteligente de áudios.
 
-> **Estado atual:** scaffold inicial (ticket [VIR-5](https://linear.app/virtus-technologies/issue/VIR-5) — `[#01] Setup Next.js + TS + Tailwind + shadcn`). Funcionalidades completas chegam nos próximos tickets, na ordem indicada por `[#NN]` no título.
+> **Estado atual (2026-05-08):** MVP completo. 58/59 tickets entregues, 1 cancelado (low priority). Resumo em `docs/plano-de-negocios.md` seção 0.
+
+## Funcionalidades
+
+- Cadastro/login com email + senha (bcrypt) e Google OAuth (conditional)
+- Middleware de proteção de rotas + isolamento por `userId`
+- Upload de áudio para Vercel Blob (mp3, m4a, wav, ogg, webm, mp4 — até 2 GB)
+- Pastas com árvore lógica, mover, renomear, excluir (cascade de paths)
+- Transcrição automática via OpenAI Whisper com timestamps por segmento
+- Editor manual de transcrição
+- Análise com IA (gpt-4o-mini) — perguntas livres ou 11 templates do sistema
+- Notas por timestamp clicáveis (seek do player)
+- Tags
+- Busca global ⌘K em áudios, pastas, tags, transcrições e análises
+- Dashboard com métricas + recentes
+- Configurações com edição de perfil + zona de perigo (excluir conta)
+- Landing pública
 
 ## Stack
 
-- **Next.js** 15 (App Router) + React 19 + TypeScript
-- **Tailwind CSS** 3 com tokens da paleta laranja definidos em `src/app/globals.css`
-- **shadcn/ui** (`new-york` style) configurado via `components.json`
-- **lucide-react** para ícones
-- ESLint + Prettier (com `prettier-plugin-tailwindcss`)
+- **Next.js** 15 (App Router) + React 19 + TypeScript estrito
+- **Tailwind CSS** 3 com paleta laranja em CSS vars (`src/app/globals.css`)
+- **shadcn/ui** (`new-york` style, `components.json`)
+- **lucide-react** ícones
+- **Prisma 6** + Postgres
+- **NextAuth v5** + Prisma adapter + Credentials + Google
+- **Vercel Blob** com path-traversal protection
+- **OpenAI** Whisper (transcrição) + Chat Completions (análises)
+- **Zod** validation
+- ESLint + Prettier (`prettier-plugin-tailwindcss`)
+- GitHub Actions CI
 
-A paleta e a tipografia (Plus Jakarta Sans + Fraunces + JetBrains Mono) seguem `docs/design.md`.
+Tipografia: Plus Jakarta Sans (body) + Fraunces (display) + JetBrains Mono (timestamps).
 
 ## Documentos de referência
 
@@ -38,7 +60,10 @@ npm run db:up
 # 4. Aplicar migrations no banco local
 npm run db:migrate -- --name init
 
-# 5. Rodar dev server
+# 5. Seed dos 11 templates de análise IA
+npm run db:seed
+
+# 6. Rodar dev server
 npm run dev
 ```
 
@@ -71,30 +96,51 @@ Credenciais padrão (apenas dev): user `meus_audios`, senha `meus_audios_dev`, d
 | `npm run db:migrate:deploy` | Aplicar migrations em produção |
 | `npm run db:studio` | Abrir Prisma Studio (UI do banco) |
 | `npm run db:reset` | Resetar banco e re-aplicar migrations (destrutivo) |
+| `npm run db:seed` | Seed dos 11 templates de análise (idempotente) |
 
 ## Estrutura de pastas
 
-Conforme `docs/plano-de-implementacao.md` seção 4:
+Detalhe completo em `docs/plano-de-implementacao.md` seção 0. Resumo:
 
 ```
 src/
-  app/            # Rotas (App Router)
-  components/     # Componentes React reutilizáveis
-    ui/           # Primitivos shadcn/ui
+  app/
+    (auth)/                    # rotas públicas: login, register, forgot-password
+    (dashboard)/               # rotas autenticadas (layout chama requireUser)
+    api/                       # route handlers REST
+    page.tsx                   # landing
+  components/
+    analyses/                  # AnalysisPanel + actions
+    audios/                    # Card, Player, Status, Metadata, Notes, Transcript
+    folders/                   # Tree + Dialogs
+    layout/                    # AppShell, Sidebar, Topbar, Brand, Breadcrumb
+    search/                    # CommandPalette ⌘K
+    tags/                      # TagBadge
+    ui/                        # primitives shadcn-style
+    upload/                    # Provider + Dialog + Dropzone
   lib/
-    utils.ts      # cn() helper para class merging
-    db/           # Cliente Prisma (#02)
-    auth/         # Helpers de sessão (#04)
-    storage/      # Vercel Blob (#03)
-    ai/           # OpenAI / AI SDK (#28+)
-    validations/  # Schemas Zod (#10)
-  services/       # Lógica de domínio (#11+)
-  types/
-  constants/
-  prompts/
-prisma/           # Schema (#02)
-preview/          # Preview HTML estático (referência visual)
-docs/             # Specs do produto
+    auth.ts                    # requireUser/requireUserApi/requireOwnership
+    db.ts                      # Prisma singleton
+    api-error.ts               # apiError helper
+    storage/                   # Vercel Blob (server-only)
+    ai/                        # OpenAI client + prompts
+    validations/               # Zod schemas
+    format.ts                  # formatDuration etc
+    logger.ts                  # withTimedLog
+    passwords.ts               # bcrypt hash/verify
+    utils.ts                   # cn()
+  services/                    # lógica de domínio (server-only)
+  middleware.ts                # Edge — usa src/auth.config.ts
+  auth.config.ts               # config Edge-safe
+  auth.ts                      # config Node + Prisma adapter
+  types/next-auth.d.ts
+prisma/
+  schema.prisma
+  seed-templates.ts
+docker-compose.yml
+.github/workflows/ci.yml
+preview/index.html             # referência visual estática
+docs/                          # plano-de-negocios, plano-de-implementacao, design
 ```
 
 ## Deploy (Vercel)

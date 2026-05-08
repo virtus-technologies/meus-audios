@@ -1,5 +1,50 @@
 # MeusÁudios — Plano de Negócios e Especificações do Produto
 
+## 0. Estado de Implementação (MVP)
+
+> Esta seção reflete o estado real do código em `main` após a implementação inicial do MVP. Atualizada em 2026-05-08.
+
+| Funcionalidade | Status | Tickets | Observações |
+| --- | --- | --- | --- |
+| Cadastro / Login email + senha | ✅ Done | VIR-12 | Credentials provider com bcryptjs (12 salt rounds) |
+| Login com Google | ✅ Done (UI + provider) | VIR-13 | Botão renderiza condicionalmente quando `GOOGLE_CLIENT_ID/SECRET` existem |
+| Recuperação de senha | ⏸️ Placeholder | VIR-14 | Página existe; implementação real depende de provider de email transacional |
+| Middleware de proteção de rotas | ✅ Done | VIR-15 | Edge-safe via split de auth.config |
+| AppShell (Sidebar, Topbar, breakpoints) | ✅ Done | VIR-10 | Drawer mobile (≤1024px) é polish futuro |
+| Folders (CRUD, árvore, mover) | ✅ Done | VIR-17/18/19/20/21 | FolderService com cascade de paths e validação de ciclos |
+| Upload de áudio | ✅ Done | VIR-22/23/24/25 | Drag-drop + multipart + progresso real via XHR |
+| Biblioteca + filtros | ✅ Done | VIR-26/27/28/29 | Filter tabs por status + página de pasta dedicada |
+| Áudios CRUD + mover | ✅ Done | VIR-30 | Cascade Blob cleanup ao excluir |
+| Página do áudio + Player | ✅ Done | VIR-31/32/33 | HTML5 audio + controles custom (sem wavesurfer no MVP) |
+| Notas por timestamp | ✅ Done | VIR-34 | Click no timestamp faz seek do player |
+| Transcrição (Whisper) | ✅ Done | VIR-35/36/37/38/39 | `verbose_json` com segments + edição manual + export TXT |
+| Análise com IA (free + templates) | ✅ Done | VIR-40/41 | gpt-4o-mini default, transcript truncado em 80k chars |
+| 11 templates do sistema | ✅ Done | VIR-42 | Seed via `npm run db:seed` (idempotente) |
+| FreeQuestionBox + ResultViewer + History | ✅ Done | VIR-43/44/45 | Tudo num único `AnalysisPanel` |
+| Galeria de templates `/templates` | ✅ Done | VIR-46 | Agrupada por categoria |
+| Tags (CRUD + associação) | ✅ Done | VIR-47/48 | TagBadge + APIs; multi-select inline fica para evolução |
+| Sugestão automática de tags via IA | ❌ Cancelado | VIR-49 | Low priority — backlog futuro |
+| Search global ⌘K | ✅ Done | VIR-50/51 | Busca em audios, folders, tags, transcripts, analyses |
+| Dashboard | ✅ Done | VIR-52/53 | 4 métricas + recentes + templates recomendados |
+| Configurações + perfil | ✅ Done | VIR-16/54 | Edit nome + zona de perigo (excluir conta) |
+| Landing page polida | ✅ Done | VIR-11 | Hero + how-it-works + use cases |
+| Empty/Loading/Error/Confirm primitives | ✅ Done | VIR-56/57/58/59 | Reutilizáveis em `src/components/ui/` |
+| Logging estruturado | ✅ Done | VIR-61 | `withTimedLog` aplicado em transcription |
+| Métricas avançadas (WPM etc) | ✅ Done | VIR-55 | `computeAudioMetrics` derivada da transcrição |
+| Responsividade + a11y básicas | ✅ Done | VIR-62 | Drawer mobile detalhado fica para iteração |
+| Domínio meusaudios.com.br + DNS | 📋 Manual | VIR-63 | Vercel Dashboard → Settings → Domains |
+
+**Decisões importantes que diferem do plano original:**
+
+- **Session strategy:** JWT em vez de `database` (Credentials provider do Auth.js v5 não suporta sessões em banco).
+- **Idiomas suportados na transcrição:** pt-BR, en, es, it (mapeados internamente para os códigos ISO `pt`, `en`, `es`, `it` antes de mandar para o Whisper).
+- **Modelo de análise:** `gpt-4o-mini` por padrão, sobrescrevível via env `OPENAI_ANALYSIS_MODEL`.
+- **Truncamento de transcrição:** 80k caracteres (custo + janela do modelo). Texto truncado é sinalizado no prompt.
+- **Storage privacy:** Vercel Blob `access: "public"` com URL unguessable via prefixo `userId/audioId`. Hardening com URL assinada fica em backlog quando produto crescer.
+- **Tags AI suggestion (VIR-49)** cancelada para o MVP.
+
+A partir daqui, a especificação original permanece como referência de produto e não foi reescrita.
+
 ## 1. Identidade do Produto
 
 **Nome do produto:** MeusÁudios  

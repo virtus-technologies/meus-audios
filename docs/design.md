@@ -1,4 +1,8 @@
-# MeusÁudios — Design Guidelines para Google Stitch
+# MeusÁudios — Design Guidelines
+
+> Documento original era foco em prompt para Google Stitch. Após o MVP, vira a fonte de verdade visual do produto. Tudo aqui já está implementado em `src/components/` e `src/app/globals.css`.
+>
+> **Estado atual (2026-05-08):** paleta laranja em produção, tipografia Plus Jakarta Sans + Fraunces + JetBrains Mono carregadas via `next/font/google`, primitives shadcn-style em `src/components/ui/` (Button, Input, Dialog, EmptyState, Skeleton, Toast, ConfirmDialog).
 
 ## 1. Objetivo do Design
 
