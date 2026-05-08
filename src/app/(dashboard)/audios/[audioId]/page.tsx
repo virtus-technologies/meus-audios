@@ -6,8 +6,10 @@ import { NotFoundError } from "@/lib/api-error";
 import { getAudioById } from "@/services/audio-service";
 import { getTranscript } from "@/services/transcription-service";
 import { listAnalyses } from "@/services/analysis-service";
+import { listNotes } from "@/services/note-service";
 import { prisma } from "@/lib/db";
 import { AnalysisPanel } from "@/components/analyses/analysis-panel";
+import { NotesPanel } from "@/components/audios/notes-panel";
 import { AudioPlayer } from "@/components/audios/audio-player";
 import { AudioMetadataPanel } from "@/components/audios/audio-metadata-panel";
 import { AudioDeleteButton } from "@/components/audios/audio-delete-button";
@@ -35,13 +37,14 @@ export default async function AudioPage({ params }: AudioPageProps) {
     throw error;
   }
 
-  const [transcript, analyses, templates] = await Promise.all([
+  const [transcript, analyses, templates, notes] = await Promise.all([
     getTranscript(audio.id, user.id),
     listAnalyses({ userId: user.id, audioId: audio.id }),
     prisma.analysisTemplate.findMany({
       where: { OR: [{ isSystem: true }, { userId: user.id }] },
       orderBy: [{ category: "asc" }, { name: "asc" }],
     }),
+    listNotes({ userId: user.id, audioId: audio.id }),
   ]);
 
   return (
@@ -99,6 +102,14 @@ export default async function AudioPage({ params }: AudioPageProps) {
 
         <div className="flex flex-col gap-6">
           <AudioMetadataPanel audio={audio} />
+          <NotesPanel
+            audioId={audio.id}
+            initialNotes={notes.map((note) => ({
+              id: note.id,
+              timestampSeconds: note.timestampSeconds,
+              text: note.text,
+            }))}
+          />
           <AnalysisPanel
             audioId={audio.id}
             hasTranscript={Boolean(transcript)}
