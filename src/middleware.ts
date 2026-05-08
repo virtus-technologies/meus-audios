@@ -66,5 +66,7 @@ export default auth((req) => {
  * Decisão sobre proteger ou liberar fica centralizada em `isPublicPath()`.
  */
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|_next/data|favicon\\.ico|robots\\.txt|sitemap\\.xml|preview).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|_next/data|favicon\\.ico|robots\\.txt|sitemap\\.xml|preview).*)",
+  ],
 };

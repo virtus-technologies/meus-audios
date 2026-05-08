@@ -1,21 +1,32 @@
 import Link from "next/link";
 
-export default function LoginPage() {
+import { LoginForm } from "./login-form";
+
+type LoginPageProps = {
+  searchParams: Promise<{ callbackUrl?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const { callbackUrl } = await searchParams;
+
   return (
-    <main className="grid min-h-screen place-items-center bg-gradient-soft px-4">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-8 shadow">
-        <h1 className="mb-2 font-display text-3xl font-medium tracking-tight">Entrar</h1>
-        <p className="mb-6 text-sm text-muted-foreground">
-          Tela completa será implementada em VIR-12 (<code className="font-mono">[#08]</code>). Por
-          enquanto este placeholder serve de destino para o middleware.
-        </p>
+    <>
+      <h1 className="mb-1 font-display text-3xl font-medium tracking-tight">Entrar</h1>
+      <p className="mb-6 text-sm text-muted-foreground">
+        Bem-vindo de volta. Use seu email e senha para continuar.
+      </p>
+
+      <LoginForm callbackUrl={callbackUrl} />
+
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Ainda não tem conta?{" "}
         <Link
-          href="/"
-          className="text-sm font-semibold text-primary transition hover:text-primary-dark"
+          href="/register"
+          className="font-semibold text-primary transition hover:text-primary-dark"
         >
-          ← Voltar para a landing
+          Criar conta
         </Link>
-      </div>
-    </main>
+      </p>
+    </>
   );
 }
