@@ -1,10 +1,14 @@
 import { AudioLines, Clock, LayoutGrid, Sparkles, Star, Upload } from "lucide-react";
 
 import { Brand } from "@/components/layout/brand";
-import { FolderTree } from "@/components/layout/folder-tree";
 import { NavItem } from "@/components/layout/nav-item";
+import { FolderTree, type FolderTreeNode } from "@/components/folders/folder-tree";
 
-export function Sidebar() {
+type SidebarProps = {
+  folders: ReadonlyArray<FolderTreeNode>;
+};
+
+export function Sidebar({ folders }: SidebarProps) {
   return (
     <aside className="flex h-screen flex-col gap-5 border-r border-border bg-surface p-3.5">
       <div className="px-1">
@@ -27,25 +31,19 @@ export function Sidebar() {
           Navegação
         </div>
         <NavItem href="/dashboard" icon={LayoutGrid} label="Dashboard" />
-        <NavItem href="/audios" icon={AudioLines} label="Biblioteca" count={142} />
+        <NavItem href="/audios" icon={AudioLines} label="Biblioteca" />
         <NavItem href="/recents" icon={Clock} label="Recentes" />
         <NavItem href="/favorites" icon={Star} label="Favoritos" />
         <NavItem href="/templates" icon={Sparkles} label="Templates" />
       </nav>
 
-      <FolderTree />
+      <FolderTree folders={folders} />
 
       <div className="mt-auto rounded-2xl border border-border bg-gradient-soft p-3.5">
         <h4 className="font-display text-base font-semibold">Plano Pessoal</h4>
         <p className="mt-1 text-xs text-muted-foreground">
-          62% das 50h mensais usadas em transcrição.
+          Plano e métricas chegam em VIR-54 e VIR-52.
         </p>
-        <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-surface">
-          <span className="block h-full w-[62%] rounded-full bg-gradient-primary" aria-hidden />
-        </div>
-        <small className="mt-2 block font-mono text-[11px] text-muted-foreground/80">
-          31h 04min · renova em 12 dias
-        </small>
       </div>
     </aside>
   );
