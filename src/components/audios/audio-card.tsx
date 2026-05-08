@@ -3,6 +3,7 @@ import { Play } from "lucide-react";
 import type { Audio } from "@prisma/client";
 
 import { AudioStatusBadge } from "./audio-status-badge";
+import { FavoriteButton } from "./favorite-button";
 import { formatDuration, formatRelativeTime } from "@/lib/format";
 
 type AudioCardProps = {
@@ -17,6 +18,11 @@ export function AudioCard({ audio }: AudioCardProps) {
     >
       <div className="relative grid h-28 place-items-center bg-gradient-soft">
         <Waveform />
+        <FavoriteButton
+          audioId={audio.id}
+          initialFavorite={audio.isFavorite}
+          className="absolute right-3 top-3"
+        />
         <span className="absolute bottom-3 right-3 grid h-10 w-10 translate-y-2 place-items-center rounded-full bg-foreground text-surface opacity-0 shadow-lg transition group-hover:translate-y-0 group-hover:opacity-100">
           <Play className="h-3.5 w-3.5 fill-current" />
         </span>

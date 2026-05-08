@@ -42,8 +42,13 @@ export const moveAudioSchema = z.object({
   folderId: idSchema.nullable(),
 });
 
+export const toggleFavoriteSchema = z.object({
+  isFavorite: z.boolean().optional(),
+});
+
 export type CreateAudioMetadataInput = z.infer<typeof createAudioMetadataSchema>;
 export type UpdateAudioInput = z.infer<typeof updateAudioSchema>;
 export type MoveAudioInput = z.infer<typeof moveAudioSchema>;
+export type ToggleFavoriteInput = z.infer<typeof toggleFavoriteSchema>;
 export type AudioLanguage = z.infer<typeof audioLanguageSchema>;
 export type AudioContentType = z.infer<typeof audioContentTypeSchema>;

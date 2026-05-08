@@ -22,11 +22,31 @@ export function Sidebar({ folders }: SidebarProps) {
         <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           Navegação
         </div>
-        <NavItem href="/dashboard" icon={LayoutGrid} label="Dashboard" />
-        <NavItem href="/audios" icon={AudioLines} label="Biblioteca" />
-        <NavItem href="/recents" icon={Clock} label="Recentes" />
-        <NavItem href="/favorites" icon={Star} label="Favoritos" />
-        <NavItem href="/templates" icon={Sparkles} label="Templates" />
+        <NavItem
+          href="/dashboard"
+          icon={<LayoutGrid className="h-4 w-4" strokeWidth={1.75} />}
+          label="Dashboard"
+        />
+        <NavItem
+          href="/audios"
+          icon={<AudioLines className="h-4 w-4" strokeWidth={1.75} />}
+          label="Biblioteca"
+        />
+        <NavItem
+          href="/recents"
+          icon={<Clock className="h-4 w-4" strokeWidth={1.75} />}
+          label="Recentes"
+        />
+        <NavItem
+          href="/favorites"
+          icon={<Star className="h-4 w-4" strokeWidth={1.75} />}
+          label="Favoritos"
+        />
+        <NavItem
+          href="/templates"
+          icon={<Sparkles className="h-4 w-4" strokeWidth={1.75} />}
+          label="Templates"
+        />
       </nav>
 
       <FolderTree folders={folders} />

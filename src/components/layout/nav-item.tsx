@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
 type NavItemProps = {
   href: string;
-  icon: LucideIcon;
+  icon: ReactNode;
   label: string;
   count?: number;
 };
 
-export function NavItem({ href, icon: Icon, label, count }: NavItemProps) {
+export function NavItem({ href, icon, label, count }: NavItemProps) {
   const pathname = usePathname();
   const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
@@ -27,7 +27,7 @@ export function NavItem({ href, icon: Icon, label, count }: NavItemProps) {
           : "text-muted-foreground hover:bg-surface-muted hover:text-foreground",
       )}
     >
-      <Icon className="h-4 w-4" strokeWidth={1.75} />
+      {icon}
       <span className="flex-1">{label}</span>
       {count !== undefined ? (
         <span

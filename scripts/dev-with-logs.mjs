@@ -28,7 +28,8 @@ process.stdout.write(header);
 logStream.write(header);
 
 const isWindows = process.platform === "win32";
-const child = spawn(isWindows ? "next.cmd" : "next", ["dev", ...process.argv.slice(2)], {
+const nextBin = resolve(repoRoot, "node_modules", ".bin", isWindows ? "next.cmd" : "next");
+const child = spawn(nextBin, ["dev", ...process.argv.slice(2)], {
   cwd: repoRoot,
   env: process.env,
   stdio: ["inherit", "pipe", "pipe"],
