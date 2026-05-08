@@ -41,7 +41,7 @@ export function Topbar({ breadcrumbs = [], userInitials = "MA" }: TopbarProps) {
         <input
           type="search"
           placeholder="Buscar em todos os áudios, transcrições e análises..."
-          className="focus:ring-primary/12 h-10 w-full rounded-xl border border-border bg-surface-muted pl-10 pr-14 text-sm outline-none transition focus:border-primary focus:bg-surface focus:ring-4"
+          className="h-10 w-full rounded-xl border border-border bg-surface-muted pl-10 pr-14 text-sm outline-none transition focus:border-primary focus:bg-surface focus:ring-4 focus:ring-primary/20"
           aria-label="Busca global"
         />
         <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">
