@@ -53,10 +53,7 @@ export const toggleFavoriteSchema = z.object({
  * por sanidade.
  */
 export const audioPeaksSchema = z.object({
-  peaks: z
-    .array(z.number().min(0).max(1))
-    .min(16)
-    .max(1024),
+  peaks: z.array(z.number().min(0).max(1)).min(16).max(1024),
 });
 
 export type AudioPeaksInput = z.infer<typeof audioPeaksSchema>;

@@ -8,16 +8,8 @@ import {
 } from "./constants";
 import { StorageError } from "./errors";
 import type { AudioUploadInput, AudioUploadResult } from "./types";
-import {
-  uploadAudioToBlob,
-  deleteAudioFromBlob,
-  fetchAudioFromBlob,
-} from "./blob";
-import {
-  uploadAudioToLocal,
-  deleteAudioFromLocal,
-  readAudioFromLocal,
-} from "./local";
+import { uploadAudioToBlob, deleteAudioFromBlob, fetchAudioFromBlob } from "./blob";
+import { uploadAudioToLocal, deleteAudioFromLocal, readAudioFromLocal } from "./local";
 
 /**
  * Padrão aceito para userId e audioId nas chaves de storage.
@@ -107,9 +99,7 @@ export async function uploadAudio(input: AudioUploadInput): Promise<AudioUploadR
   validateAudioFile({ mimeType: input.mimeType, sizeBytes });
   const storageKey = buildAudioStorageKey(input);
   const payload = { ...input, storageKey };
-  return isLocalStorageBackend()
-    ? uploadAudioToLocal(payload)
-    : uploadAudioToBlob(payload);
+  return isLocalStorageBackend() ? uploadAudioToLocal(payload) : uploadAudioToBlob(payload);
 }
 
 /**
