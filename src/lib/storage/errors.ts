@@ -2,8 +2,9 @@ export class StorageError extends Error {
   constructor(
     message: string,
     public readonly code: StorageErrorCode,
+    options?: { cause?: Error },
   ) {
-    super(message);
+    super(message, options);
     this.name = "StorageError";
   }
 }
@@ -14,4 +15,6 @@ export type StorageErrorCode =
   | "FILE_TOO_LARGE"
   | "MISSING_TOKEN"
   | "UPLOAD_FAILED"
-  | "DELETE_FAILED";
+  | "DELETE_FAILED"
+  | "READ_FAILED"
+  | "NOT_FOUND";

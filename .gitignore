@@ -27,6 +27,9 @@ yarn-error.log*
 # local server logs (scripts/dev-with-logs.mjs)
 /logs
 
+# local audio uploads (APP_ENV=local) — served via /api/uploads
+/uploads
+
 # local env files
 .env*.local
 .env

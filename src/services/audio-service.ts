@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
-import type { Audio, AudioStatus } from "@prisma/client";
+import type { Audio, AudioStatus, Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/db";
 import { ForbiddenError } from "@/lib/auth";
@@ -167,6 +167,18 @@ export async function moveAudio(input: {
   return prisma.audio.update({
     where: { id: audio.id },
     data: { folderId: input.folderId },
+  });
+}
+
+export async function setAudioPeaks(input: {
+  userId: string;
+  audioId: string;
+  peaks: ReadonlyArray<number>;
+}): Promise<Audio> {
+  const audio = await loadAudioForUser(input.audioId, input.userId);
+  return prisma.audio.update({
+    where: { id: audio.id },
+    data: { peaksJson: [...input.peaks] satisfies Prisma.InputJsonValue },
   });
 }
 
