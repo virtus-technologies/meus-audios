@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, AudioLines, FolderOpen, Sparkles, Upload } from "lucide-react";
+import { ArrowRight, FolderOpen, Sparkles, Upload } from "lucide-react";
+
+import { MarkLogo } from "@/components/layout/mark-logo";
 
 const STEPS = [
   {
@@ -44,8 +46,8 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-soft">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <Link href="/" className="flex items-center gap-3">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-primary text-primary-foreground shadow-glow">
-            <AudioLines className="h-4 w-4" strokeWidth={1.75} />
+          <span className="grid h-9 w-9 place-items-center overflow-hidden rounded-xl shadow-glow">
+            <MarkLogo idSuffix="landing" />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight">
             Meus<em className="font-medium italic not-italic text-primary">Áudios</em>

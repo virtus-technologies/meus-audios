@@ -13,11 +13,7 @@ type AudioCardProps = {
 export function AudioCard({ audio }: AudioCardProps) {
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition hover:-translate-y-0.5 hover:border-transparent hover:shadow-lg">
-      <Link
-        href={`/audios/${audio.id}`}
-        className="absolute inset-0 z-0"
-        aria-label={audio.title}
-      >
+      <Link href={`/audios/${audio.id}`} className="absolute inset-0 z-0" aria-label={audio.title}>
         <span className="sr-only">Abrir {audio.title}</span>
       </Link>
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { AudioLines } from "lucide-react";
 
+import { MarkLogo } from "@/components/layout/mark-logo";
 import { cn } from "@/lib/utils";
 
 type BrandProps = {
@@ -11,8 +11,8 @@ type BrandProps = {
 export function Brand({ className, showSubtitle = false }: BrandProps) {
   return (
     <Link href="/dashboard" className={cn("flex items-center gap-3", className)}>
-      <span className="grid h-9 w-9 place-items-center overflow-hidden rounded-xl bg-gradient-primary text-primary-foreground shadow-glow">
-        <AudioLines className="h-4 w-4" strokeWidth={1.75} />
+      <span className="grid h-9 w-9 place-items-center overflow-hidden rounded-xl shadow-glow">
+        <MarkLogo idSuffix="brand-sidebar" />
       </span>
       <span className="flex flex-col leading-tight">
         <span className="font-display text-lg font-semibold tracking-tight">

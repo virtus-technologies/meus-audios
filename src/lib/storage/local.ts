@@ -64,11 +64,9 @@ export async function readAudioFromLocal(storageKey: string): Promise<Buffer> {
   try {
     return await fs.readFile(target);
   } catch (error) {
-    throw new StorageError(
-      `Falha ao ler arquivo local (${storageKey}).`,
-      "READ_FAILED",
-      { cause: error as Error },
-    );
+    throw new StorageError(`Falha ao ler arquivo local (${storageKey}).`, "READ_FAILED", {
+      cause: error as Error,
+    });
   }
 }
 
@@ -84,11 +82,9 @@ export function openLocalAudio(storageKey: string): LocalFileHandle {
   try {
     size = statSync(absolutePath).size;
   } catch (error) {
-    throw new StorageError(
-      `Arquivo local não encontrado (${storageKey}).`,
-      "NOT_FOUND",
-      { cause: error as Error },
-    );
+    throw new StorageError(`Arquivo local não encontrado (${storageKey}).`, "NOT_FOUND", {
+      cause: error as Error,
+    });
   }
   return {
     absolutePath,

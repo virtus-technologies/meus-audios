@@ -29,10 +29,7 @@ const MIME_BY_EXT: Record<string, string> = {
   mp4: "video/mp4",
 };
 
-export async function GET(
-  request: Request,
-  context: { params: Promise<{ key: string[] }> },
-) {
+export async function GET(request: Request, context: { params: Promise<{ key: string[] }> }) {
   if (!isLocalStorageBackend()) {
     return new NextResponse("Not found", { status: 404 });
   }

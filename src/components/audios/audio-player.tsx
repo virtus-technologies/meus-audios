@@ -94,8 +94,7 @@ export function AudioPlayer({
 
         const AudioCtx =
           window.AudioContext ||
-          (window as unknown as { webkitAudioContext?: typeof AudioContext })
-            .webkitAudioContext;
+          (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
         if (!AudioCtx) throw new Error("AudioContext indisponível");
         const ctx = new AudioCtx();
         let decoded: AudioBuffer;
@@ -160,11 +159,7 @@ export function AudioPlayer({
       <audio ref={audioRef} src={src} preload="metadata" />
 
       {peaks ? (
-        <Waveform
-          peaks={peaks}
-          progressPct={progressPct}
-          onSeek={seekToPercent}
-        />
+        <Waveform peaks={peaks} progressPct={progressPct} onSeek={seekToPercent} />
       ) : (
         <ProgressBar progressPct={progressPct} onSeek={seekToPercent} loading={!peaksError} />
       )}
@@ -175,36 +170,36 @@ export function AudioPlayer({
         </span>
 
         <div className="flex items-center justify-center gap-3">
-        <button
-          type="button"
-          onClick={() => seekBy(-10)}
-          aria-label="Voltar 10 segundos"
-          className="grid h-10 w-10 place-items-center rounded-full text-foreground transition hover:bg-surface-muted"
-        >
-          <Rewind className="h-4 w-4" />
-        </button>
+          <button
+            type="button"
+            onClick={() => seekBy(-10)}
+            aria-label="Voltar 10 segundos"
+            className="grid h-10 w-10 place-items-center rounded-full text-foreground transition hover:bg-surface-muted"
+          >
+            <Rewind className="h-4 w-4" />
+          </button>
 
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label={isPlaying ? "Pausar" : "Tocar"}
-          className="grid h-14 w-14 place-items-center rounded-full bg-gradient-primary text-primary-foreground shadow-glow transition hover:scale-105"
-        >
-          {isPlaying ? (
-            <Pause className="h-5 w-5 fill-current" />
-          ) : (
-            <Play className="h-5 w-5 fill-current" />
-          )}
-        </button>
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={isPlaying ? "Pausar" : "Tocar"}
+            className="grid h-14 w-14 place-items-center rounded-full bg-gradient-primary text-primary-foreground shadow-glow transition hover:scale-105"
+          >
+            {isPlaying ? (
+              <Pause className="h-5 w-5 fill-current" />
+            ) : (
+              <Play className="h-5 w-5 fill-current" />
+            )}
+          </button>
 
-        <button
-          type="button"
-          onClick={() => seekBy(10)}
-          aria-label="Avançar 10 segundos"
-          className="grid h-10 w-10 place-items-center rounded-full text-foreground transition hover:bg-surface-muted"
-        >
-          <FastForward className="h-4 w-4" />
-        </button>
+          <button
+            type="button"
+            onClick={() => seekBy(10)}
+            aria-label="Avançar 10 segundos"
+            className="grid h-10 w-10 place-items-center rounded-full text-foreground transition hover:bg-surface-muted"
+          >
+            <FastForward className="h-4 w-4" />
+          </button>
         </div>
 
         <div className="flex items-center justify-end gap-3">

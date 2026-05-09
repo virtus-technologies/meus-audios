@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MeusÁudios — Brand Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --surface-muted: #f1f5f9;
+        --border: #e2e8f0;
+        --ink: #0f172a;
+        --ink-2: #475569;
+        --ink-3: #94a3b8;
+        --primary: #ea580c;
+        --primary-dark: #9a3412;
+        --primary-light: #ffedd5;
+        --accent: #e11d48;
+        --info: #d97706;
+        --grad: linear-gradient(135deg, #ea580c 0%, #e11d48 55%, #d97706 100%);
+        --grad-soft: linear-gradient(135deg, #ffedd5 0%, #ffe4e6 50%, #fef3c7 100%);
+        --shadow-glow: 0 16px 48px -12px rgba(234, 88, 12, 0.35);
+        --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.06);
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      .display { font-family: "Fraunces", Georgia, serif; letter-spacing: -0.025em; }
+      .mono { font-family: "JetBrains Mono", monospace; }
+
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 64px 32px 96px;
+      }
+      header.hero {
+        position: relative;
+        padding: 56px 48px;
+        border-radius: 28px;
+        background:
+          radial-gradient(80% 100% at 0% 0%, rgba(255, 237, 213, 0.6), transparent 60%),
+          radial-gradient(70% 100% at 100% 0%, rgba(255, 228, 230, 0.55), transparent 60%),
+          radial-gradient(60% 100% at 50% 100%, rgba(254, 243, 199, 0.6), transparent 60%),
+          var(--surface);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      header.hero .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--ink-3);
+      }
+      header.hero h1 {
+        margin: 12px 0 8px;
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 400;
+        font-size: 56px;
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+      }
+      header.hero h1 em {
+        font-style: italic;
+        font-weight: 400;
+        color: var(--primary);
+      }
+      header.hero p {
+        max-width: 56ch;
+        color: var(--ink-2);
+        font-size: 17px;
+      }
+
+      section {
+        margin-top: 72px;
+      }
+      section h2 {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-size: 30px;
+        letter-spacing: -0.02em;
+        margin: 0 0 4px;
+      }
+      section .lead {
+        color: var(--ink-2);
+        margin: 0 0 28px;
+        font-size: 15px;
+      }
+
+      .grid {
+        display: grid;
+        gap: 24px;
+      }
+      .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+      .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+      @media (max-width: 880px) {
+        .grid.cols-3, .grid.cols-2 { grid-template-columns: 1fr; }
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: var(--shadow-card);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      .card.dark {
+        background: #0f172a;
+        border-color: rgba(255, 255, 255, 0.08);
+        color: #f8fafc;
+      }
+      .card.tinted {
+        background: var(--grad-soft);
+        border: none;
+      }
+      .card .label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-weight: 700;
+        color: var(--ink-3);
+      }
+      .card.dark .label { color: rgba(255, 255, 255, 0.5); }
+
+      /* Mark renderings ------------------------------------------------ */
+      .mark-stage {
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        border-radius: 16px;
+        width: 100%;
+      }
+      .mark-stage.glow img { filter: drop-shadow(var(--shadow-glow)); }
+
+      .size-row {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 32px;
+        flex-wrap: wrap;
+        padding: 32px;
+      }
+      .size-row figure {
+        margin: 0;
+        text-align: center;
+      }
+      .size-row figcaption {
+        margin-top: 12px;
+        font-size: 11px;
+        color: var(--ink-3);
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* Wordmark line -------------------------------------------------- */
+      .wordmark {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      .wordmark .mark-tile {
+        display: grid;
+        place-items: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: var(--grad);
+        box-shadow: var(--shadow-glow);
+      }
+      .wordmark .mark-tile.lg {
+        width: 80px;
+        height: 80px;
+        border-radius: 22px;
+      }
+      .wordmark .mark-tile svg {
+        width: 60%;
+        height: 60%;
+      }
+      .wordmark .text {
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 40px;
+        line-height: 1;
+        letter-spacing: -0.025em;
+        font-weight: 500;
+      }
+      .wordmark .text em {
+        font-style: italic;
+        font-weight: 400;
+        color: var(--primary);
+      }
+      .wordmark.lg .text { font-size: 64px; }
+      .wordmark.dark .text { color: #f8fafc; }
+      .wordmark.dark .text em { color: #fdba74; }
+
+      /* Browser-tab favicon mock -------------------------------------- */
+      .tab-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px 10px 12px;
+        background: var(--surface-muted);
+        border: 1px solid var(--border);
+        border-radius: 12px 12px 0 0;
+        border-bottom: none;
+        font-size: 13px;
+        color: var(--ink-2);
+        font-weight: 500;
+      }
+      .tab img { width: 16px; height: 16px; }
+
+      /* Color tokens --------------------------------------------------- */
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+      }
+      @media (max-width: 880px) { .swatches { grid-template-columns: repeat(3, 1fr); } }
+      .swatch {
+        border-radius: 14px;
+        padding: 16px;
+        height: 96px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+      }
+      .swatch.on-light { color: var(--ink); border: 1px solid var(--border); }
+      .swatch.on-dark { color: #fff; }
+
+      footer.legend {
+        margin-top: 80px;
+        padding: 32px;
+        border-top: 1px solid var(--border);
+        color: var(--ink-2);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <span class="eyebrow">Brand preview · 2026-05-08</span>
+        <h1 class="display">Meus<em>Áudios</em><br />identidade visual.</h1>
+        <p>
+          Marca: squircle gradiente quente. <em>Á italic Fraunces</em> centralizado.
+          Simples e direto. Mesma glifo do wordmark "Meus<em>Áudios</em>" — leitura
+          imediata da identidade.
+        </p>
+      </header>
+
+      <section>
+        <h2>Mark principal</h2>
+        <p class="lead">Aplicação em superfície clara, escura e tom neutro institucional.</p>
+        <div class="grid cols-3">
+          <div class="card">
+            <div class="mark-stage glow">
+              <img src="mark.svg" alt="MeusÁudios mark" width="220" height="220" />
+            </div>
+            <span class="label">Light · gradient</span>
+          </div>
+          <div class="card dark">
+            <div class="mark-stage glow">
+              <img src="mark.svg" alt="MeusÁudios mark" width="220" height="220" />
+            </div>
+            <span class="label">Dark surface</span>
+          </div>
+          <div class="card tinted">
+            <div class="mark-stage">
+              <img src="mark-monochrome.svg" alt="Mark monochrome" width="220" height="220" />
+            </div>
+            <span class="label">Monochrome · ink</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Wordmark</h2>
+        <p class="lead">Fraunces 500 + itálico em <em>Áudios</em>. Espaço-aire generoso, kerning negativo.</p>
+        <div class="grid cols-2">
+          <div class="card" style="align-items: flex-start;">
+            <div class="wordmark lg">
+              <span class="mark-tile lg"><img src="mark.svg" alt="" /></span>
+              <span class="text">Meus<em>Áudios</em></span>
+            </div>
+            <span class="label">Horizontal · primário</span>
+          </div>
+          <div class="card dark" style="align-items: flex-start;">
+            <div class="wordmark lg dark">
+              <span class="mark-tile lg"><img src="mark.svg" alt="" /></span>
+              <span class="text">Meus<em>Áudios</em></span>
+            </div>
+            <span class="label">Horizontal · dark</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Escala &amp; favicons</h2>
+        <p class="lead">Versão simplificada usada em 32px e abaixo (menos barras, traços maiores).</p>
+        <div class="card">
+          <div class="size-row">
+            <figure>
+              <img src="mark.svg" width="128" height="128" alt="" />
+              <figcaption>128 px · app icon</figcaption>
+            </figure>
+            <figure>
+              <img src="mark.svg" width="64" height="64" alt="" />
+              <figcaption>64 px</figcaption>
+            </figure>
+            <figure>
+              <img src="favicon-32.svg" width="32" height="32" alt="" />
+              <figcaption>32 px · favicon</figcaption>
+            </figure>
+            <figure>
+              <img src="favicon-16.svg" width="16" height="16" alt="" />
+              <figcaption>16 px · tab</figcaption>
+            </figure>
+          </div>
+          <div class="tab-row">
+            <span class="tab"><img src="favicon-16.svg" alt="" />MeusÁudios — Dashboard</span>
+            <span class="tab"><img src="favicon-16.svg" alt="" />Biblioteca</span>
+            <span class="tab"><img src="favicon-16.svg" alt="" />Áudio · 12:34</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Tokens de cor</h2>
+        <p class="lead">Mesmos tokens já vigentes em <span class="mono">globals.css</span>.</p>
+        <div class="swatches">
+          <div class="swatch on-dark" style="background: #ea580c">
+            <strong>Primary</strong><span>#EA580C</span>
+          </div>
+          <div class="swatch on-dark" style="background: #e11d48">
+            <strong>Accent</strong><span>#E11D48</span>
+          </div>
+          <div class="swatch on-dark" style="background: #d97706">
+            <strong>Info</strong><span>#D97706</span>
+          </div>
+          <div class="swatch on-light" style="background: #ffedd5">
+            <strong>Primary light</strong><span>#FFEDD5</span>
+          </div>
+          <div class="swatch on-light" style="background: #ffe4e6">
+            <strong>Accent light</strong><span>#FFE4E6</span>
+          </div>
+          <div class="swatch on-dark" style="background: #0f172a">
+            <strong>Ink</strong><span>#0F172A</span>
+          </div>
+        </div>
+      </section>
+
+      <footer class="legend">
+        Arquivos prontos: <span class="mono">mark.svg</span>,
+        <span class="mono">mark-monochrome.svg</span>,
+        <span class="mono">wordmark.svg</span>,
+        <span class="mono">favicon-32.svg</span>. Após aprovação, gero PNG/ICO em
+        <span class="mono">public/</span> e ligo metadata, manifest, sitemap, robots, OG image e
+        JSON-LD em <span class="mono">src/app/</span>.
+      </footer>
+    </main>
+  </body>
+</html>
