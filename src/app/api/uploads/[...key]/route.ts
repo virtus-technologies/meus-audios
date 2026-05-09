@@ -76,6 +76,12 @@ export async function GET(
     }
     const startStr = match[1];
     const endStr = match[2];
+    if (startStr === "" && endStr === "") {
+      return new NextResponse("Invalid Range", {
+        status: 416,
+        headers: { "Content-Range": `bytes */${handle.size}` },
+      });
+    }
     const start = startStr === "" ? handle.size - Number(endStr) : Number(startStr);
     const end = endStr === "" ? handle.size - 1 : Number(endStr);
     if (

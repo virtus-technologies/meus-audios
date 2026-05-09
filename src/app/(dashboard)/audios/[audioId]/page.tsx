@@ -94,7 +94,7 @@ export default async function AudioPage({ params }: AudioPageProps) {
         audioId={audio.id}
         src={audio.blobUrl}
         initialDurationSeconds={audio.durationSeconds}
-        initialPeaks={Array.isArray(audio.peaksJson) ? (audio.peaksJson as number[]) : null}
+        initialPeaks={parsePersistedPeaks(audio.peaksJson)}
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
@@ -136,4 +136,20 @@ export default async function AudioPage({ params }: AudioPageProps) {
       </div>
     </div>
   );
+}
+
+/**
+ * Valida o JSON persistido em `Audio.peaksJson` antes de entregar ao
+ * player. Se algum elemento não for número finito em [0,1] ou o array
+ * tiver tamanho fora do permitido, devolve null e o player re-decodifica.
+ */
+function parsePersistedPeaks(value: unknown): number[] | null {
+  if (!Array.isArray(value)) return null;
+  if (value.length < 16 || value.length > 1024) return null;
+  for (const item of value) {
+    if (typeof item !== "number" || !Number.isFinite(item) || item < 0 || item > 1) {
+      return null;
+    }
+  }
+  return value as number[];
 }
