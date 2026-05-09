@@ -177,22 +177,21 @@
         gap: 24px;
       }
       .wordmark .mark-tile {
-        display: grid;
-        place-items: center;
+        display: block;
         width: 56px;
         height: 56px;
-        border-radius: 16px;
-        background: var(--grad);
-        box-shadow: var(--shadow-glow);
+        flex: none;
+        filter: drop-shadow(var(--shadow-glow));
       }
       .wordmark .mark-tile.lg {
         width: 80px;
         height: 80px;
-        border-radius: 22px;
       }
+      .wordmark .mark-tile img,
       .wordmark .mark-tile svg {
-        width: 60%;
-        height: 60%;
+        display: block;
+        width: 100%;
+        height: 100%;
       }
       .wordmark .text {
         font-family: "Fraunces", Georgia, serif;
