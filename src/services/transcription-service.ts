@@ -8,6 +8,7 @@ import { ForbiddenError } from "@/lib/auth";
 import { NotFoundError, ValidationError } from "@/lib/api-error";
 import { getOpenAIClient } from "@/lib/ai/openai";
 import { logger, withTimedLog } from "@/lib/logger";
+import { readAudioBuffer } from "@/lib/storage";
 
 export type TranscriptSegment = {
   start: number;
@@ -56,11 +57,10 @@ async function runTranscription(audioId: string, audio: AudioRecord): Promise<Tr
   void audioId;
 
   try {
-    const response = await fetch(audio.blobUrl);
-    if (!response.ok) {
-      throw new Error(`Falha ao baixar arquivo do storage (status ${response.status}).`);
-    }
-    const buffer = Buffer.from(await response.arrayBuffer());
+    const buffer = await readAudioBuffer({
+      storageKey: audio.storageKey,
+      blobUrl: audio.blobUrl,
+    });
     const file = await toFile(buffer, audio.originalFileName, { type: audio.mimeType });
 
     const openai = getOpenAIClient();

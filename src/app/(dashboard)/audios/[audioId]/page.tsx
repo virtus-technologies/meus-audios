@@ -90,7 +90,12 @@ export default async function AudioPage({ params }: AudioPageProps) {
         </div>
       </header>
 
-      <AudioPlayer src={audio.blobUrl} initialDurationSeconds={audio.durationSeconds} />
+      <AudioPlayer
+        audioId={audio.id}
+        src={audio.blobUrl}
+        initialDurationSeconds={audio.durationSeconds}
+        initialPeaks={Array.isArray(audio.peaksJson) ? (audio.peaksJson as number[]) : null}
+      />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <TranscriptViewer

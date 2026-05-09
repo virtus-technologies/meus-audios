@@ -46,6 +46,21 @@ export const toggleFavoriteSchema = z.object({
   isFavorite: z.boolean().optional(),
 });
 
+/**
+ * Peaks do waveform — array de magnitudes RMS normalizadas (0..1)
+ * por bucket. Tamanho intermediário (16..1024) cobre player com poucos
+ * ou muitos bars. Valores fora de 0..1 são clamp na UI mas rejeitamos
+ * por sanidade.
+ */
+export const audioPeaksSchema = z.object({
+  peaks: z
+    .array(z.number().min(0).max(1))
+    .min(16)
+    .max(1024),
+});
+
+export type AudioPeaksInput = z.infer<typeof audioPeaksSchema>;
+
 export type CreateAudioMetadataInput = z.infer<typeof createAudioMetadataSchema>;
 export type UpdateAudioInput = z.infer<typeof updateAudioSchema>;
 export type MoveAudioInput = z.infer<typeof moveAudioSchema>;

@@ -1,6 +1,5 @@
 import "server-only";
 
-import { put, del, type PutBlobResult } from "@vercel/blob";
 import {
   ALLOWED_AUDIO_MIME_TYPES,
   MAX_AUDIO_SIZE_BYTES,
@@ -8,6 +7,17 @@ import {
   type AllowedAudioMimeType,
 } from "./constants";
 import { StorageError } from "./errors";
+import type { AudioUploadInput, AudioUploadResult } from "./types";
+import {
+  uploadAudioToBlob,
+  deleteAudioFromBlob,
+  fetchAudioFromBlob,
+} from "./blob";
+import {
+  uploadAudioToLocal,
+  deleteAudioFromLocal,
+  readAudioFromLocal,
+} from "./local";
 
 /**
  * Padrão aceito para userId e audioId nas chaves de storage.
@@ -17,29 +27,18 @@ import { StorageError } from "./errors";
  */
 const STORAGE_ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
-export type AudioUploadInput = {
-  userId: string;
-  audioId: string;
-  file: Blob;
-  mimeType: string;
-};
+export type { AudioUploadInput, AudioUploadResult } from "./types";
 
-export type AudioUploadResult = {
-  blobUrl: string;
-  storageKey: string;
-  sizeBytes: number;
-  mimeType: string;
-};
-
-function assertToken(): string {
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) {
-    throw new StorageError(
-      "BLOB_READ_WRITE_TOKEN não configurado. Veja .env.example.",
-      "MISSING_TOKEN",
-    );
-  }
-  return token;
+/**
+ * Backend é selecionado por `APP_ENV`:
+ * - `local` → filesystem (`./uploads/{storageKey}`), servido por `/api/uploads/[...key]`
+ * - qualquer outro → Vercel Blob
+ *
+ * `BLOB_READ_WRITE_TOKEN` continua exigido para preview/produção, mas
+ * em dev local não é necessário.
+ */
+export function isLocalStorageBackend(): boolean {
+  return process.env.APP_ENV === "local";
 }
 
 function assertSafeStorageId(value: string, name: "userId" | "audioId"): void {
@@ -96,61 +95,44 @@ export function buildAudioStorageKey(params: {
 }
 
 /**
- * Faz upload de um arquivo de áudio para o Vercel Blob.
+ * Faz upload de um arquivo de áudio para o backend ativo (local ou Vercel Blob).
  *
  * O tamanho é lido diretamente de `file.size` (Blob nativo); o caller não
- * pode falsificar o tamanho via parâmetro separado. Erros do SDK são
+ * pode falsificar o tamanho via parâmetro separado. Erros do backend são
  * registrados no servidor mas não propagam mensagens cruas (mitigação de
  * leak de detalhes internos / token).
- *
- * Acesso atual é `public` (limitação do `@vercel/blob` v1). A URL é
- * unguessable graças ao prefixo `userId/audioId`. Para hardening
- * futuro: emitir URLs assinadas com expiração curta sob demanda.
  */
 export async function uploadAudio(input: AudioUploadInput): Promise<AudioUploadResult> {
   const sizeBytes = input.file.size;
   validateAudioFile({ mimeType: input.mimeType, sizeBytes });
-  const token = assertToken();
   const storageKey = buildAudioStorageKey(input);
-
-  let blob: PutBlobResult;
-  try {
-    blob = await put(storageKey, input.file, {
-      access: "public",
-      contentType: input.mimeType,
-      token,
-      addRandomSuffix: false,
-    });
-  } catch (error) {
-    console.error("[storage] uploadAudio failed", { storageKey, error });
-    throw new StorageError(
-      "Falha ao fazer upload para o Vercel Blob. Verifique os logs do servidor.",
-      "UPLOAD_FAILED",
-    );
-  }
-
-  return {
-    blobUrl: blob.url,
-    storageKey,
-    sizeBytes,
-    mimeType: input.mimeType,
-  };
+  const payload = { ...input, storageKey };
+  return isLocalStorageBackend()
+    ? uploadAudioToLocal(payload)
+    : uploadAudioToBlob(payload);
 }
 
 /**
  * Remove um áudio do storage. Chamado quando o `Audio` é excluído no banco.
  */
 export async function deleteAudio(storageKey: string): Promise<void> {
-  const token = assertToken();
-  try {
-    await del(storageKey, { token });
-  } catch (error) {
-    console.error("[storage] deleteAudio failed", { storageKey, error });
-    throw new StorageError(
-      "Falha ao excluir do Vercel Blob. Verifique os logs do servidor.",
-      "DELETE_FAILED",
-    );
-  }
+  return isLocalStorageBackend()
+    ? deleteAudioFromLocal(storageKey)
+    : deleteAudioFromBlob(storageKey);
+}
+
+/**
+ * Lê o conteúdo bruto do áudio. Usado pela transcrição (Whisper) que
+ * precisa do buffer in-memory. Em local lê do filesystem; em remoto baixa
+ * do Vercel Blob.
+ */
+export async function readAudioBuffer(audio: {
+  storageKey: string;
+  blobUrl: string;
+}): Promise<Buffer> {
+  return isLocalStorageBackend()
+    ? readAudioFromLocal(audio.storageKey)
+    : fetchAudioFromBlob(audio.blobUrl);
 }
 
 export { StorageError } from "./errors";

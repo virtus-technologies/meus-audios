@@ -170,6 +170,18 @@ export async function moveAudio(input: {
   });
 }
 
+export async function setAudioPeaks(input: {
+  userId: string;
+  audioId: string;
+  peaks: ReadonlyArray<number>;
+}): Promise<Audio> {
+  const audio = await loadAudioForUser(input.audioId, input.userId);
+  return prisma.audio.update({
+    where: { id: audio.id },
+    data: { peaksJson: input.peaks as unknown as object },
+  });
+}
+
 export async function deleteAudio(input: { userId: string; audioId: string }): Promise<void> {
   const audio = await loadAudioForUser(input.audioId, input.userId);
   await prisma.audio.delete({ where: { id: audio.id } });
